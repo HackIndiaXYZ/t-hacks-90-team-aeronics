@@ -3,8 +3,9 @@ import { Link } from "@tanstack/react-router";
 import {
   AnimatePresence,
   motion,
+  useMotionValueEvent,
   useReducedMotion,
-  type MotionStyle,
+  useScroll,
   type Variants,
 } from "framer-motion";
 import {
@@ -14,11 +15,13 @@ import {
   Coffee,
   Copy,
   ListChecks,
+  MessageSquare,
   Plus,
   Scale,
   Sparkles,
   Users,
   Wand2,
+  Wrench,
 } from "lucide-react";
 import { Logo } from "@/components/Logo";
 
@@ -27,61 +30,79 @@ import { Logo } from "@/components/Logo";
 /* ------------------------------------------------------------------ */
 
 const COLORS = {
-  bg: "#000000",
+  bg: "#BDEDFD",
   primary: "#1E3A8A",
-  secondary: "#60A5FA",
-  accent: "#93C5FD",
-  text: "#FFFFFF",
-  muted: "rgba(255,255,255,0.5)",
+  text: "#1E3A8A",
+  body: "rgba(30, 58, 138, 0.7)",
 };
 
 const EMAIL = "developerstimely@gmail.com";
 
+const COOKIE_KEY = "cookie_consent";
+
 const GLASS: CSSProperties = {
-  background: "rgba(255, 255, 255, 0.03)",
-  backdropFilter: "blur(12px)",
-  WebkitBackdropFilter: "blur(12px)",
+  background: "rgba(255, 255, 255, 0.01)",
+  backdropFilter: "blur(2px)",
+  WebkitBackdropFilter: "blur(2px)",
   borderRadius: "16px",
-  border: "1px solid rgba(255, 255, 255, 0.06)",
-  boxShadow: "0 4px 30px rgba(0, 0, 0, 0.3)",
+  border: "none",
+  boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
 };
 
-const NOISE =
-  "url(\"data:image/svg+xml,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/></filter><rect width='100%' height='100%' filter='url(%23n)' opacity='0.03'/></svg>\")";
-
-const SPRING = { type: "spring" as const, stiffness: 200, damping: 25 };
-const VIEWPORT = { once: true, margin: "-80px" } as const;
+const NAV_SPRING = { type: "spring" as const, stiffness: 300, damping: 30 };
+const VIEWPORT = { once: true, margin: "-60px" } as const;
+const EDITORIAL_EASE = [0.25, 0.1, 0.25, 1] as const;
 
 // The global stylesheet scales every button/link on hover; opt out where it hurts layout.
 const NO_SCALE: CSSProperties = { transform: "none" };
 
 const PAGE_CSS = `
-@keyframes tl-glow {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(96,165,250,0.35), 0 0 8px rgba(96,165,250,0.2); }
-  50% { box-shadow: 0 0 0 6px rgba(96,165,250,0), 0 0 22px rgba(96,165,250,0.45); }
+@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap");
+.landing-page {
+  color: #1E3A8A;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
-@keyframes tl-marquee {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+.landing-page h1,
+.landing-page h2,
+.landing-page h3,
+.landing-page h4,
+.landing-page h5,
+.landing-page h6 {
+  color: #1E3A8A;
+  font-family: 'JetBrains Mono', 'Courier New', monospace;
+  font-weight: 400;
 }
-@keyframes tl-twinkle {
-  0%, 100% { opacity: 0.08; }
-  50% { opacity: var(--peak, 1); }
+.landing-page h1 {
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
-@keyframes tl-panel-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+.landing-page h2 {
+  font-size: 48px;
+  line-height: 1.15;
 }
-.tl-badge { animation: tl-glow 2.4s ease-in-out infinite; }
-.tl-marquee-track { animation: tl-marquee 60s linear infinite; }
-.tl-panel { animation: tl-panel-in 1.6s ease-out both; }
-.tl-px { animation: tl-twinkle var(--dur, 5s) ease-in-out var(--delay, 0s) infinite; }
-@media (prefers-reduced-motion: reduce) {
-  .tl-badge, .tl-marquee-track, .tl-panel { animation: none; }
-  .tl-px { animation: none; opacity: 0.5; }
+.landing-page h3 { font-size: 26px; }
+.landing-page p,
+.landing-page blockquote { color: rgba(30, 58, 138, 0.7); }
+.landing-page .text-white { color: #1E3A8A; }
+.landing-page a {
+  text-decoration: none !important;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease !important;
 }
-html.tl-dark, html.tl-dark body { background: #000000 !important; color-scheme: dark; }
-body.tl-cursor, body.tl-cursor * { cursor: none !important; }
+.landing-page a:hover {
+  color: #1E3A8A !important;
+  text-decoration: underline !important;
+}
+.landing-page button {
+  transition: opacity 0.15s ease !important;
+}
+.landing-page button:hover { opacity: 0.85; }
+.landing-page a:hover,
+.landing-page button:hover,
+.landing-page [role="button"]:hover { transform: none !important; }
+.landing-page [data-lift] {
+  transition: translate 0.2s ease;
+}
+.landing-page [data-lift]:hover { translate: 0 -2px; }
 `;
 
 /* ------------------------------------------------------------------ */
@@ -94,39 +115,36 @@ const TICKER_FEATURES =
 const PROBLEMS = [
   {
     icon: Clock3,
-    title: "Morning chaos",
-    copy: "One late message can turn the time before assembly into a rush of calls, lists and last-minute changes.",
+    title: "Done in 90 seconds",
+    copy: "From first absence to finished plan. Before the staffroom gets loud.",
   },
   {
     icon: Scale,
-    title: "Fairness concerns",
-    copy: "Without a clear record, the same available teachers can be chosen again and again.",
+    title: "Nobody gets overloaded",
+    copy: "The algorithm tracks who's covered what. Every teacher gets a fair share.",
   },
   {
     icon: Coffee,
-    title: "Teacher burnout",
-    copy: "Uneven substitutions take away planning periods and put extra pressure on already busy staff.",
+    title: "Your timetable, imported",
+    copy: "Upload your .xlsx file. Timely reads it and gets to work.",
   },
 ];
 
 const BENEFITS = [
   {
     icon: Clock3,
-    label: "Speed",
-    stat: "90 seconds",
-    copy: "Turn today's absences into a print-ready plan before the first bell.",
+    stat: "Print-ready, always",
+    copy: "Clean output, formatted for the notice board.",
   },
   {
     icon: Scale,
-    label: "Fairness",
-    stat: "Clear choices",
-    copy: "Timely checks who is free and spreads substitutions more evenly.",
+    stat: "Your data stays yours",
+    copy: "Tied to your account. Nobody else can see it.",
   },
   {
     icon: Sparkles,
-    label: "Simple",
-    stat: "No account needed",
-    copy: "Open the tool and make a plan. No training or lengthy setup required.",
+    stat: "Any device, any browser",
+    copy: "No app to install. Open the link and start.",
   },
 ];
 
@@ -134,20 +152,20 @@ const STEPS = [
   {
     number: "01",
     icon: ListChecks,
-    title: "Input absences",
-    copy: "Select the teachers and periods that need cover.",
+    title: "Mark who's absent",
+    copy: "Takes under a minute. Pick the teachers and the periods they're missing.",
   },
   {
     number: "02",
     icon: Wand2,
-    title: "Generate plan",
-    copy: "Timely finds free teachers and balances the work.",
+    title: "Get the plan",
+    copy: "Timely assigns substitutes automatically. No favourites, no overloading the same person twice.",
   },
   {
     number: "03",
     icon: CheckCircle2,
-    title: "Done",
-    copy: "Review, adjust if needed, then print or share the plan.",
+    title: "Print and walk away",
+    copy: "One tap. Ready for the notice board.",
   },
 ];
 
@@ -188,14 +206,21 @@ const FAQS = [
 /*  Motion helpers                                                     */
 /* ------------------------------------------------------------------ */
 
-function makeReveal(reduced: boolean, y = 40): Variants {
+const FEATURE_TILTS = [-2.5, 1.8, -1.2, 2.4, -1.8, 1.2];
+const FEATURE_LIFTS = [0, 32, 12, 44, 6, 24];
+
+function makeReveal(reduced: boolean): Variants {
   return {
-    hidden: { opacity: reduced ? 1 : 0, y: reduced ? 0 : y },
-    visible: { opacity: 1, y: 0, transition: reduced ? { duration: 0 } : SPRING },
+    hidden: { opacity: reduced ? 1 : 0, y: reduced ? 0 : 16 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: reduced ? { duration: 0 } : { duration: 0.5, ease: EDITORIAL_EASE },
+    },
   };
 }
 
-function makeStagger(reduced: boolean, gap: number): Variants {
+function makeStagger(reduced: boolean, gap = 0.08): Variants {
   return {
     hidden: {},
     visible: { transition: { staggerChildren: reduced ? 0 : gap } },
@@ -203,176 +228,73 @@ function makeStagger(reduced: boolean, gap: number): Variants {
 }
 
 /* ------------------------------------------------------------------ */
-/*  Custom cursor                                                      */
-/* ------------------------------------------------------------------ */
-
-function CustomCursor({ reduced }: { reduced: boolean }) {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
-  const [enabled, setEnabled] = useState(false);
-
-  useEffect(() => {
-    setEnabled(!window.matchMedia("(pointer: coarse)").matches);
-  }, []);
-
-  useEffect(() => {
-    if (!enabled) return;
-    document.body.classList.add("tl-cursor");
-
-    const mouse = { x: -100, y: -100 };
-    const ring = { x: -100, y: -100, scale: 1 };
-    let targetScale = 1;
-    let frame = 0;
-    let seen = false;
-
-    const onMove = (e: MouseEvent) => {
-      mouse.x = e.clientX;
-      mouse.y = e.clientY;
-      if (!seen) {
-        seen = true;
-        ring.x = e.clientX;
-        ring.y = e.clientY;
-        if (dotRef.current) dotRef.current.style.opacity = "1";
-        if (ringRef.current) ringRef.current.style.opacity = "1";
-      }
-      if (dotRef.current)
-        dotRef.current.style.transform = `translate3d(${e.clientX}px, ${e.clientY}px, 0)`;
-      const el = e.target as Element | null;
-      targetScale = el?.closest?.("a, button, [role='button']") ? 44 / 28 : 1;
-    };
-    const onLeave = () => {
-      if (dotRef.current) dotRef.current.style.opacity = "0";
-      if (ringRef.current) ringRef.current.style.opacity = "0";
-      seen = false;
-    };
-
-    const tick = () => {
-      const k = reduced ? 1 : 0.1;
-      ring.x += (mouse.x - ring.x) * k;
-      ring.y += (mouse.y - ring.y) * k;
-      ring.scale += (targetScale - ring.scale) * (reduced ? 1 : 0.2);
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate3d(${ring.x}px, ${ring.y}px, 0) scale(${ring.scale})`;
-      }
-      frame = requestAnimationFrame(tick);
-    };
-
-    document.addEventListener("mousemove", onMove);
-    document.documentElement.addEventListener("mouseleave", onLeave);
-    frame = requestAnimationFrame(tick);
-    return () => {
-      document.removeEventListener("mousemove", onMove);
-      document.documentElement.removeEventListener("mouseleave", onLeave);
-      cancelAnimationFrame(frame);
-      document.body.classList.remove("tl-cursor");
-    };
-  }, [enabled, reduced]);
-
-  if (!enabled) return null;
-
-  return (
-    <>
-      <div
-        ref={dotRef}
-        aria-hidden="true"
-        className="pointer-events-none fixed left-0 top-0 z-[9999]"
-        style={{
-          width: 6,
-          height: 6,
-          marginLeft: -3,
-          marginTop: -3,
-          borderRadius: "50%",
-          background: COLORS.secondary,
-          opacity: 0,
-          transition: "opacity 0.2s ease",
-        }}
-      />
-      <div
-        ref={ringRef}
-        aria-hidden="true"
-        className="pointer-events-none fixed left-0 top-0 z-[9998]"
-        style={{
-          width: 28,
-          height: 28,
-          marginLeft: -14,
-          marginTop: -14,
-          borderRadius: "50%",
-          border: "1px solid rgba(96,165,250,0.4)",
-          opacity: 0,
-          transition: "opacity 0.2s ease",
-        }}
-      />
-    </>
-  );
-}
-
-/* ------------------------------------------------------------------ */
 /*  Navbar — contracts into a floating pill on scroll                  */
 /* ------------------------------------------------------------------ */
 
 const navLinkClass =
-  "whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] transition-colors hover:text-white sm:text-sm";
+  "whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] transition-colors sm:text-sm";
 
-function Navbar({ reduced }: { reduced: boolean }) {
+function Navbar() {
+  const { scrollY } = useScroll();
   const [scrolled, setScrolled] = useState(false);
   const [vw, setVw] = useState(1280);
 
+  useMotionValueEvent(scrollY, "change", (latest) => setScrolled(latest >= 50));
+
   useEffect(() => {
-    const update = () => {
-      setScrolled(window.scrollY > 80);
-      setVw(window.innerWidth);
-    };
+    const update = () => setVw(window.innerWidth);
+    setScrolled(scrollY.get() >= 50);
     update();
-    window.addEventListener("scroll", update, { passive: true });
     window.addEventListener("resize", update);
-    return () => {
-      window.removeEventListener("scroll", update);
-      window.removeEventListener("resize", update);
-    };
-  }, []);
+    return () => window.removeEventListener("resize", update);
+  }, [scrollY]);
 
   const mobile = vw < 640;
-  const pillWidth = Math.min(480, vw - 24);
-  const transition = reduced ? { duration: 0 } : SPRING;
 
-  const top = {
-    width: "100%",
-    paddingTop: mobile ? 16 : 24,
-    paddingBottom: mobile ? 16 : 24,
-    paddingLeft: mobile ? 20 : 48,
-    paddingRight: mobile ? 20 : 48,
-    marginTop: 0,
-    borderRadius: "0px",
+  const expanded = {
+    paddingTop: 16,
+    paddingBottom: 16,
+    paddingLeft: mobile ? 20 : 40,
+    paddingRight: mobile ? 20 : 40,
+    borderRadius: 0,
     background: "rgba(255, 255, 255, 0)",
     backdropFilter: "blur(0px)",
     WebkitBackdropFilter: "blur(0px)",
-    border: "1px solid rgba(255, 255, 255, 0)",
     boxShadow: "0 4px 30px rgba(0, 0, 0, 0)",
   };
 
-  const pill = {
-    width: pillWidth,
-    paddingTop: mobile ? 10 : 12,
-    paddingBottom: mobile ? 10 : 12,
+  const contracted = {
+    paddingTop: 10,
+    paddingBottom: 10,
     paddingLeft: mobile ? 16 : 24,
     paddingRight: mobile ? 16 : 24,
-    marginTop: 16,
-    borderRadius: "16px",
-    background: "rgba(255, 255, 255, 0.03)",
+    borderRadius: 40,
+    background: "rgba(255, 255, 255, 0.01)",
     backdropFilter: "blur(12px)",
     WebkitBackdropFilter: "blur(12px)",
-    border: "1px solid rgba(255, 255, 255, 0.06)",
-    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.3)",
+    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
   };
 
   return (
-    <div className="pointer-events-none fixed inset-x-0 top-0 z-50 flex justify-center">
+    <motion.div
+      initial={false}
+      animate={{ top: scrolled ? 12 : 0 }}
+      transition={NAV_SPRING}
+      className="pointer-events-none fixed inset-x-0 z-50 flex justify-center"
+    >
       <motion.header
+        layout
         initial={false}
-        animate={scrolled ? pill : top}
-        transition={transition}
+        animate={scrolled ? contracted : expanded}
+        transition={NAV_SPRING}
         className="pointer-events-auto flex items-center justify-between"
-        style={{ boxSizing: "border-box", maxWidth: "100%" }}
+        style={{
+          boxSizing: "border-box",
+          width: scrolled ? "calc(100% - 24px)" : "100%",
+          maxWidth: scrolled ? 600 : "100%",
+          margin: "0 auto",
+          border: "none",
+        }}
       >
         <Link
           to="/"
@@ -386,205 +308,90 @@ function Navbar({ reduced }: { reduced: boolean }) {
           </span>
         </Link>
         <nav className="flex items-center gap-0.5 sm:gap-1" aria-label="Main navigation">
-          <Link to="/student" className={navLinkClass} style={{ color: COLORS.muted, ...NO_SCALE }}>
+          <Link to="/student" className={navLinkClass} style={{ color: COLORS.text, ...NO_SCALE }}>
             Student portal
           </Link>
           <Link
             to="/auth"
             search={{ tab: "login" }}
             className={navLinkClass}
-            style={{ color: COLORS.muted, ...NO_SCALE }}
+            style={{ color: COLORS.text, ...NO_SCALE }}
           >
             Log in
           </Link>
           <Link
             to="/auth"
             search={{ tab: "signup" }}
-            className="whitespace-nowrap rounded-full px-3.5 py-1.5 text-[13px] font-medium text-white sm:text-sm"
-            style={{ background: COLORS.primary, ...NO_SCALE }}
+            className="whitespace-nowrap rounded-lg px-3.5 py-1.5 text-[13px] font-normal text-white sm:text-sm"
+            style={{ background: COLORS.primary, color: "#FFFFFF", ...NO_SCALE }}
           >
             Sign up
           </Link>
         </nav>
       </motion.header>
-    </div>
+    </motion.div>
   );
 }
-
-/* ------------------------------------------------------------------ */
-/*  Pixel panels (hero sides)                                          */
-/* ------------------------------------------------------------------ */
-
-const PANEL_LEFT = ["0110", "1100", "1100", "0100", "1110", "1001", "1000", "0110"];
-const PANEL_RIGHT = ["0001", "0110", "0011", "0111", "0011", "0101", "0001", "0010"];
-const PIXEL_TINTS = [COLORS.primary, COLORS.secondary, COLORS.accent];
-
-// Deterministic pseudo-random so server and client render identical markup.
-const rand = (n: number) => {
-  const x = Math.sin(n * 12.9898 + 78.233) * 43758.5453;
-  return x - Math.floor(x);
-};
-
-function PixelPanel({
-  cells,
-  side,
-  seed,
-}: {
-  cells: string[];
-  side: "left" | "right";
-  seed: number;
-}) {
-  return (
-    <div
-      aria-hidden="true"
-      className={`tl-panel pointer-events-none absolute top-1/2 z-0 -translate-y-1/2 [--cell:24px] sm:[--cell:40px] lg:[--cell:52px] xl:[--cell:66px] ${
-        side === "left" ? "left-0" : "right-0"
-      }`}
-    >
-      <div
-        className="grid opacity-50 lg:opacity-100"
-        style={{
-          gridTemplateColumns: "repeat(4, var(--cell))",
-          gridAutoRows: "var(--cell)",
-          gap: 0,
-        }}
-      >
-        {cells.flatMap((row, r) =>
-          row.split("").map((on, c) => {
-            const i = seed + r * 4 + c;
-            if (on !== "1") return <span key={i} />;
-            const tint = PIXEL_TINTS[Math.floor(rand(i + 1) * PIXEL_TINTS.length)];
-            return (
-              <span
-                key={i}
-                className="tl-px relative block overflow-hidden"
-                style={
-                  {
-                    ...GLASS,
-                    borderRadius: 0,
-                    "--dur": `${(3 + rand(i + 2) * 4).toFixed(2)}s`,
-                    "--delay": `${(-rand(i + 3) * 7).toFixed(2)}s`,
-                    "--peak": (0.55 + rand(i + 4) * 0.45).toFixed(2),
-                  } as CSSProperties
-                }
-              >
-                <span
-                  className="absolute inset-0"
-                  style={{
-                    background: `linear-gradient(135deg, ${tint}, transparent 80%)`,
-                    opacity: 0.6,
-                    boxShadow: "inset 0 0 0 1px rgba(147,197,253,0.22)",
-                  }}
-                />
-              </span>
-            );
-          }),
-        )}
-      </div>
-    </div>
-  );
-}
-
 /* ------------------------------------------------------------------ */
 /*  Hero                                                               */
 /* ------------------------------------------------------------------ */
 
 function Hero({ reduced }: { reduced: boolean }) {
-  const stagger = makeStagger(reduced, 0.15);
-  const item = makeReveal(reduced, 30);
-  const pressable = reduced ? {} : { whileHover: { scale: 1.04 }, whileTap: { scale: 0.97 } };
-
   return (
-    <section className="relative flex min-h-[100svh] flex-col overflow-hidden">
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0"
-        style={{
-          background:
-            "radial-gradient(ellipse 70% 55% at 50% 38%, rgba(30,58,138,0.35), transparent 70%)",
-        }}
-      />
-      <PixelPanel cells={PANEL_LEFT} side="left" seed={10} />
-      <PixelPanel cells={PANEL_RIGHT} side="right" seed={100} />
-      <div className="relative z-10 flex flex-1 items-center justify-center px-5 pb-12 pt-28 sm:px-8 sm:pt-32">
+    <section className="relative flex min-h-[100svh] flex-col">
+      <div className="relative z-10 flex flex-1 items-center justify-center px-5 pb-20 pt-20 sm:px-8">
         <motion.div
+          initial={{ opacity: 0, y: reduced ? 0 : 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: reduced ? 0 : 0.6 }}
           className="mx-auto w-full max-w-6xl text-center"
-          variants={stagger}
-          initial="hidden"
-          animate="visible"
         >
-          <motion.div variants={item} className="flex justify-center">
+          <div className="flex justify-center">
             <span
-              className="tl-badge inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-medium text-white sm:text-sm"
+              className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.12em] sm:text-sm"
               style={{
-                background: "rgba(96,165,250,0.1)",
-                border: `1px solid ${COLORS.secondary}`,
+                color: COLORS.body,
               }}
             >
-              <Users className="size-4" style={{ color: COLORS.secondary }} /> Built for busy school
-              mornings
+              <Users className="size-5" style={{ color: COLORS.primary }} aria-hidden="true" />
+              For school admins who hate Monday mornings
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h1
-            variants={item}
-            className="mx-auto mt-8 max-w-5xl text-[40px] font-bold leading-[1.08] tracking-tight text-white md:text-[72px] 2xl:text-[88px]"
+          <h1
+            className="mx-auto mt-8 max-w-5xl uppercase"
+            style={{
+              fontSize: "clamp(2.5rem, 6vw, 5rem)",
+              fontWeight: 300,
+              letterSpacing: "-0.02em",
+              lineHeight: 1.08,
+              color: COLORS.text,
+            }}
           >
-            Never Scramble for{" "}
-            <span
+            Your substitute plan, before the first bell.
+          </h1>
+
+          <p
+            className="mx-auto mt-6 text-base leading-relaxed sm:text-lg 2xl:text-xl"
+            style={{ maxWidth: 560, color: COLORS.body }}
+          >
+            Log who&apos;s absent. Timely handles the rest — fairly, instantly, without the chaos.
+          </p>
+
+          <div className="mt-10 flex justify-center">
+            <Link
+              to="/app"
+              className="inline-flex items-center gap-2 px-7 py-3.5 text-sm font-semibold text-white"
               style={{
-                backgroundImage: `linear-gradient(90deg, ${COLORS.primary}, ${COLORS.secondary})`,
-                WebkitBackgroundClip: "text",
-                backgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                color: "transparent",
+                background: COLORS.primary,
+                color: "#FFFFFF",
+                borderRadius: 8,
+                ...NO_SCALE,
               }}
             >
-              Teacher Substitutes
-            </span>{" "}
-            Again
-          </motion.h1>
-
-          <motion.p
-            variants={item}
-            className="mx-auto mt-6 text-base leading-relaxed sm:text-lg 2xl:text-xl"
-            style={{ maxWidth: 560, color: "rgba(255,255,255,0.6)" }}
-          >
-            Generate fair, conflict-free substitution plans in 90 seconds — ready to print, no setup
-            needed.
-          </motion.p>
-
-          <motion.div
-            variants={item}
-            className="mt-10 flex flex-col items-center justify-center gap-3 sm:flex-row"
-          >
-            <motion.div {...pressable} transition={SPRING}>
-              <Link
-                to="/app"
-                className="inline-flex items-center gap-2 rounded-xl px-7 py-3.5 text-sm font-semibold text-white"
-                style={{
-                  background: COLORS.primary,
-                  boxShadow: "0 0 20px rgba(30,58,138,0.6)",
-                  ...NO_SCALE,
-                }}
-              >
-                Launch Dashboard <ArrowRight className="size-4" />
-              </Link>
-            </motion.div>
-            <motion.div {...pressable} transition={SPRING}>
-              <a
-                href="#how-it-works"
-                className="inline-flex items-center rounded-xl px-7 py-3.5 text-sm font-semibold text-white"
-                style={{
-                  background: "transparent",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  ...NO_SCALE,
-                }}
-              >
-                See How It Works
-              </a>
-            </motion.div>
-          </motion.div>
+              Open the dashboard <ArrowRight className="size-4" />
+            </Link>
+          </div>
         </motion.div>
       </div>
       <LogoTicker />
@@ -597,25 +404,14 @@ function Hero({ reduced }: { reduced: boolean }) {
 /* ------------------------------------------------------------------ */
 
 function LogoTicker() {
-  const mask = "linear-gradient(to right, transparent, #000 12%, #000 88%, transparent)";
-  const text = (
-    <span
-      className="flex-none whitespace-nowrap pr-6 text-sm font-medium tracking-wide sm:text-base"
-      style={{ color: "rgba(255,255,255,0.3)" }}
+  return (
+    <div
+      aria-label="Key features"
+      role="region"
+      className="relative overflow-hidden py-8 text-center text-sm font-normal tracking-wide sm:py-10 sm:text-base"
+      style={{ color: COLORS.body }}
     >
       {TICKER_FEATURES}
-    </span>
-  );
-  return (
-    <div aria-label="Key features" role="region" className="relative overflow-hidden py-8 sm:py-10">
-      <div className="overflow-hidden" style={{ maskImage: mask, WebkitMaskImage: mask }}>
-        <div className="tl-marquee-track flex w-max">
-          {text}
-          <span aria-hidden="true" className="flex">
-            {text}
-          </span>
-        </div>
-      </div>
     </div>
   );
 }
@@ -644,16 +440,14 @@ function SectionHeading({
       className="mx-auto max-w-2xl text-center"
     >
       <span
-        className="text-xs font-medium uppercase tracking-[0.2em]"
-        style={{ color: COLORS.secondary }}
+        className="text-xs font-normal uppercase tracking-[0.2em]"
+        style={{ color: COLORS.body }}
       >
         {eyebrow}
       </span>
-      <h2 className="mt-4 text-3xl font-bold leading-tight tracking-tight text-white sm:text-5xl">
-        {title}
-      </h2>
+      <h2 className="mt-4 text-3xl leading-tight tracking-tight sm:text-5xl">{title}</h2>
       {copy && (
-        <p className="mt-4 text-base leading-relaxed" style={{ color: COLORS.muted }}>
+        <p className="mt-4 text-base leading-relaxed" style={{ color: COLORS.body }}>
           {copy}
         </p>
       )}
@@ -667,44 +461,37 @@ function SectionHeading({
 
 function FeatureCard({
   icon: Icon,
-  label,
   title,
   copy,
-  reduced,
+  tilt,
+  lift,
   variants,
 }: {
   icon: typeof Clock3;
-  label?: string;
   title: string;
   copy: string;
-  reduced: boolean;
+  tilt: number;
+  lift: number;
   variants: Variants;
 }) {
   return (
     <motion.article
       variants={variants}
-      {...(reduced
-        ? {}
-        : {
-            whileHover: {
-              borderColor: "rgba(96,165,250,0.3)",
-              boxShadow: "0 4px 30px rgba(0, 0, 0, 0.3), 0 0 20px rgba(96,165,250,0.1)",
-            },
-          })}
-      style={GLASS as MotionStyle}
-      className="p-7"
+      data-lift
+      style={{
+        ...GLASS,
+        width: 280,
+        flexShrink: 0,
+        padding: "32px 24px",
+        rotate: tilt,
+        marginTop: lift,
+      }}
     >
-      <Icon className="size-5" style={{ color: COLORS.secondary }} aria-hidden="true" />
-      {label && (
-        <p
-          className="mt-5 text-xs font-medium uppercase tracking-[0.18em]"
-          style={{ color: COLORS.muted }}
-        >
-          {label}
-        </p>
-      )}
-      <h3 className={`${label ? "mt-1" : "mt-5"} text-xl font-semibold text-white`}>{title}</h3>
-      <p className="mt-2 text-sm leading-relaxed" style={{ color: COLORS.muted }}>
+      <Icon className="size-6" style={{ color: COLORS.primary }} aria-hidden="true" />
+      <h3 className="mt-5" style={{ fontSize: 16, fontWeight: 700, color: COLORS.text }}>
+        {title}
+      </h3>
+      <p className="mt-2 text-sm leading-relaxed" style={{ color: COLORS.body }}>
         {copy}
       </p>
     </motion.article>
@@ -713,84 +500,121 @@ function FeatureCard({
 
 function Features({ reduced }: { reduced: boolean }) {
   const reveal = makeReveal(reduced);
-  const stagger = makeStagger(reduced, 0.1);
-  const grid = "grid gap-5 md:grid-cols-3";
+  const stagger = makeStagger(reduced);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [constraints, setConstraints] = useState({ left: 0, right: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  useEffect(() => {
+    const measure = () => {
+      const container = containerRef.current;
+      const track = trackRef.current;
+      if (!container || !track) return;
+      setConstraints({ left: Math.min(0, container.offsetWidth - track.scrollWidth), right: 0 });
+    };
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, []);
+
+  const cards = [
+    ...PROBLEMS.map((p) => ({
+      key: p.title,
+      icon: p.icon,
+      title: p.title,
+      copy: p.copy,
+    })),
+    ...BENEFITS.map((b) => ({
+      key: b.stat,
+      icon: b.icon,
+      title: b.stat,
+      copy: b.copy,
+    })),
+  ];
 
   return (
-    <section id="why-it-matters" className="px-5 py-24 sm:px-8">
-      <div className="mx-auto max-w-6xl">
+    <section id="why-it-matters" className="py-20">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <SectionHeading
           eyebrow="Why this matters"
-          title="A calmer start for the whole school"
+          title="Built for real schools"
           copy="When someone is absent, the admin team carries the pressure. Timely helps you act quickly without losing fairness."
           variants={reveal}
         />
+      </div>
+      <div
+        ref={containerRef}
+        className="relative mt-12 w-full overflow-hidden"
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+        onMouseMove={(event) => setMousePos({ x: event.clientX, y: event.clientY })}
+      >
         <motion.div
+          ref={trackRef}
+          drag="x"
+          dragConstraints={constraints}
+          dragElastic={0.1}
           variants={stagger}
           initial="hidden"
           whileInView="visible"
           viewport={VIEWPORT}
-          className={`mt-12 ${grid}`}
+          className="flex w-max cursor-grab select-none items-start gap-6 py-10 pr-5 active:cursor-grabbing sm:pr-8"
+          style={{ paddingLeft: "max(20px, calc((100vw - 72rem) / 2 + 32px))" }}
         >
-          {PROBLEMS.map((p) => (
+          {cards.map((card, index) => (
             <FeatureCard
-              key={p.title}
-              icon={p.icon}
-              title={p.title}
-              copy={p.copy}
-              reduced={reduced}
+              key={card.key}
+              icon={card.icon}
+              title={card.title}
+              copy={card.copy}
+              tilt={FEATURE_TILTS[index % FEATURE_TILTS.length] ?? 0}
+              lift={FEATURE_LIFTS[index % FEATURE_LIFTS.length] ?? 0}
               variants={reveal}
             />
           ))}
         </motion.div>
-
-        <div className="mt-24">
-          <SectionHeading
-            eyebrow="Fast, fair, simple"
-            title="Less admin. More confidence."
-            variants={reveal}
-          />
-        </div>
-        <motion.div
-          variants={stagger}
-          initial="hidden"
-          whileInView="visible"
-          viewport={VIEWPORT}
-          className={`mt-12 ${grid}`}
-        >
-          {BENEFITS.map((b) => (
-            <FeatureCard
-              key={b.label}
-              icon={b.icon}
-              label={b.label}
-              title={b.stat}
-              copy={b.copy}
-              reduced={reduced}
-              variants={reveal}
-            />
-          ))}
-        </motion.div>
+        <AnimatePresence>
+          {isHovering && (
+            <motion.div
+              key="drag-hint"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.15 }}
+              className="pointer-events-none fixed z-[9999]"
+              style={{
+                left: mousePos.x + 16,
+                top: mousePos.y + 16,
+                background: COLORS.primary,
+                color: "#FFFFFF",
+                fontFamily: "'JetBrains Mono', 'Courier New', monospace",
+                fontSize: 12,
+                padding: "6px 14px",
+                borderRadius: 20,
+              }}
+            >
+              {"< DRAG >"}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   );
 }
-
 /* ------------------------------------------------------------------ */
 /*  How it works                                                       */
 /* ------------------------------------------------------------------ */
 
 function HowItWorks({ reduced }: { reduced: boolean }) {
   const reveal = makeReveal(reduced);
-  const stagger = makeStagger(reduced, 0.15);
+  const stagger = makeStagger(reduced);
 
   return (
-    <section id="how-it-works" className="scroll-mt-20 px-5 py-24 sm:px-8">
+    <section id="how-it-works" className="scroll-mt-20 px-5 py-20 sm:px-8">
       <div className="mx-auto max-w-6xl">
-        <SectionHeading
-          eyebrow="How it works"
-          title="From absences to a fair plan in three steps"
-          variants={reveal}
-        />
+        <SectionHeading eyebrow="How it works" title="Three steps. That's it." variants={reveal} />
         <motion.ol
           variants={stagger}
           initial="hidden"
@@ -803,18 +627,18 @@ function HowItWorks({ reduced }: { reduced: boolean }) {
               <span
                 aria-hidden="true"
                 className="pointer-events-none absolute -top-2 left-2 select-none font-bold leading-none"
-                style={{ fontSize: 120, color: "rgba(255,255,255,0.04)" }}
+                style={{ fontSize: 120, color: "rgba(15, 23, 42, 0.04)" }}
               >
                 {step.number}
               </span>
-              <div style={GLASS} className="relative p-7">
+              <div data-lift style={GLASS} className="relative p-7">
                 <step.icon
                   className="size-5"
-                  style={{ color: COLORS.secondary }}
+                  style={{ color: COLORS.primary }}
                   aria-hidden="true"
                 />
-                <h3 className="mt-5 text-xl font-semibold text-white">{step.title}</h3>
-                <p className="mt-2 text-sm leading-relaxed" style={{ color: COLORS.muted }}>
+                <h3 className="mt-5 text-xl">{step.title}</h3>
+                <p className="mt-2 text-sm leading-relaxed" style={{ color: COLORS.body }}>
                   {step.copy}
                 </p>
               </div>
@@ -830,7 +654,7 @@ function HowItWorks({ reduced }: { reduced: boolean }) {
 /*  Testimonial + support pills                                        */
 /* ------------------------------------------------------------------ */
 
-function SupportOptions({ reduced }: { reduced: boolean }) {
+function SupportOptions() {
   const [open, setOpen] = useState<"feature" | "support" | null>(null);
   const [copied, setCopied] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -858,56 +682,57 @@ function SupportOptions({ reduced }: { reduced: boolean }) {
       {(["feature", "support"] as const).map((type) => {
         const isOpen = open === type;
         return (
-          <motion.div
+          <div
             key={type}
-            layout={!reduced}
-            transition={reduced ? { duration: 0 } : SPRING}
-            style={
-              {
-                ...GLASS,
-                borderRadius: isOpen ? "16px" : "999px",
-                overflow: "hidden",
-              } as MotionStyle
-            }
+            data-lift
+            style={{
+              ...GLASS,
+              overflow: "hidden",
+            }}
           >
             <button
               type="button"
               onClick={() => setOpen(isOpen ? null : type)}
               aria-expanded={isOpen}
-              className="px-5 py-2.5 text-sm font-medium text-white"
+              className="px-5 py-2.5 text-sm font-normal"
               style={NO_SCALE}
             >
-              {type === "feature" ? "💬 Suggest a Feature" : "🛠 Get Support"}
+              <span className="inline-flex items-center gap-2">
+                {type === "feature" ? (
+                  <MessageSquare
+                    className="size-5"
+                    style={{ color: COLORS.primary }}
+                    aria-hidden="true"
+                  />
+                ) : (
+                  <Wrench className="size-5" style={{ color: COLORS.primary }} aria-hidden="true" />
+                )}
+                {type === "feature" ? "Suggest a Feature" : "Get Support"}
+              </span>
             </button>
-            <AnimatePresence initial={false}>
-              {isOpen && (
-                <motion.div
-                  initial={reduced ? false : { opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={reduced ? { opacity: 0 } : { opacity: 0, height: 0 }}
-                  transition={reduced ? { duration: 0 } : SPRING}
-                  className="flex items-center gap-2 overflow-hidden whitespace-nowrap px-5 pb-3 text-xs"
-                  style={{ color: COLORS.muted }}
+            {isOpen && (
+              <div
+                className="flex items-center gap-2 overflow-hidden whitespace-nowrap px-5 pb-3 text-xs"
+                style={{ color: COLORS.body }}
+              >
+                <span>{EMAIL}</span>
+                <button
+                  type="button"
+                  onClick={copyEmail}
+                  aria-label="Copy support email"
+                  className="grid size-7 flex-none place-items-center rounded-lg"
+                  style={{
+                    background: "transparent",
+                    color: COLORS.primary,
+                    ...NO_SCALE,
+                  }}
                 >
-                  <span>{EMAIL}</span>
-                  <button
-                    type="button"
-                    onClick={copyEmail}
-                    aria-label="Copy support email"
-                    className="grid size-7 flex-none place-items-center rounded-full"
-                    style={{
-                      background: "rgba(96,165,250,0.12)",
-                      color: COLORS.secondary,
-                      ...NO_SCALE,
-                    }}
-                  >
-                    <Copy className="size-3.5" />
-                  </button>
-                  {copied && <span style={{ color: COLORS.accent }}>Copied!</span>}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.div>
+                  <Copy className="size-3.5" />
+                </button>
+                {copied && <span style={{ color: COLORS.text }}>Copied!</span>}
+              </div>
+            )}
+          </div>
         );
       })}
     </div>
@@ -917,7 +742,7 @@ function SupportOptions({ reduced }: { reduced: boolean }) {
 function Testimonial({ reduced }: { reduced: boolean }) {
   const reveal = makeReveal(reduced);
   return (
-    <section className="px-5 py-24 sm:px-8">
+    <section className="px-5 py-20 sm:px-8">
       <motion.div
         variants={reveal}
         initial="hidden"
@@ -925,19 +750,20 @@ function Testimonial({ reduced }: { reduced: boolean }) {
         viewport={VIEWPORT}
         className="mx-auto max-w-3xl"
       >
-        <figure style={GLASS} className="m-0 px-8 py-12 text-center sm:px-14">
+        <figure data-lift style={GLASS} className="m-0 px-8 py-12 text-center sm:px-14">
           <div
             aria-hidden="true"
-            className="font-serif leading-none"
-            style={{ fontSize: "4rem", color: COLORS.secondary }}
+            className="leading-none"
+            style={{ fontSize: "4rem", color: COLORS.body }}
           >
             “
           </div>
-          <blockquote className="m-0 text-2xl font-medium leading-snug tracking-tight text-white sm:text-3xl">
-            Saves us 30 minutes. Fairness logic means no teacher gets burned out.
+          <blockquote className="m-0 text-2xl font-normal leading-snug tracking-tight sm:text-3xl">
+            We used to spend half an hour on this every morning. Now it&apos;s done before I&apos;ve
+            finished my chai. — Vice Principal, Government School, Delhi
           </blockquote>
         </figure>
-        <SupportOptions reduced={reduced} />
+        <SupportOptions />
       </motion.div>
     </section>
   );
@@ -950,12 +776,12 @@ function Testimonial({ reduced }: { reduced: boolean }) {
 function Faq({ reduced }: { reduced: boolean }) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const reveal = makeReveal(reduced);
-  const stagger = makeStagger(reduced, 0.08);
+  const stagger = makeStagger(reduced);
 
   return (
-    <section className="px-5 py-24 sm:px-8">
+    <section className="px-5 py-20 sm:px-8">
       <div className="mx-auto max-w-3xl">
-        <SectionHeading eyebrow="FAQ" title="Questions school admins ask" variants={reveal} />
+        <SectionHeading eyebrow="FAQ" title="Questions we actually get asked" variants={reveal} />
         <motion.div
           variants={stagger}
           initial="hidden"
@@ -966,46 +792,32 @@ function Faq({ reduced }: { reduced: boolean }) {
           {FAQS.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
-              <motion.article key={faq.question} variants={reveal} style={GLASS as MotionStyle}>
+              <motion.article key={faq.question} variants={reveal} data-lift style={GLASS}>
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : index)}
                   aria-expanded={isOpen}
-                  className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left text-base font-medium text-white"
+                  className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left text-base font-normal"
                   style={NO_SCALE}
                 >
                   <span>{faq.question}</span>
-                  <motion.span
-                    aria-hidden="true"
-                    animate={{ rotate: isOpen ? 45 : 0 }}
-                    transition={reduced ? { duration: 0 } : SPRING}
-                    className="flex-none"
-                    style={{ color: COLORS.secondary }}
-                  >
+                  <span aria-hidden="true" className="flex-none" style={{ color: COLORS.primary }}>
                     <Plus className="size-5" />
-                  </motion.span>
+                  </span>
                 </button>
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={reduced ? false : { opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={reduced ? { opacity: 0 } : { opacity: 0, height: 0 }}
-                      transition={reduced ? { duration: 0 } : SPRING}
-                      className="overflow-hidden"
+                {isOpen && (
+                  <div className="overflow-hidden">
+                    <p
+                      className="px-6 pb-5 pt-4 text-sm leading-relaxed"
+                      style={{
+                        color: COLORS.body,
+                        borderTop: "none",
+                      }}
                     >
-                      <p
-                        className="px-6 pb-5 pt-4 text-sm leading-relaxed"
-                        style={{
-                          color: COLORS.muted,
-                          borderTop: "1px solid rgba(255,255,255,0.06)",
-                        }}
-                      >
-                        {faq.answer}
-                      </p>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      {faq.answer}
+                    </p>
+                  </div>
+                )}
               </motion.article>
             );
           })}
@@ -1019,10 +831,17 @@ function Faq({ reduced }: { reduced: boolean }) {
 /*  Footer                                                             */
 /* ------------------------------------------------------------------ */
 
-function Footer() {
-  const link = "transition-colors hover:text-white";
+function Footer({ reduced }: { reduced: boolean }) {
+  const reveal = makeReveal(reduced);
+  const link = "transition-colors";
   return (
-    <footer style={{ borderTop: "1px solid rgba(255,255,255,0.06)" }}>
+    <motion.footer
+      variants={reveal}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VIEWPORT}
+      style={{ borderTop: "1px solid rgba(30, 58, 138, 0.12)" }}
+    >
       <div className="mx-auto grid max-w-6xl items-center gap-6 px-5 py-10 text-sm sm:px-8 md:grid-cols-3">
         <Link
           to="/"
@@ -1035,14 +854,14 @@ function Footer() {
         <a
           href={`mailto:${EMAIL}`}
           className={`${link} md:justify-self-center`}
-          style={{ color: COLORS.muted, ...NO_SCALE }}
+          style={{ color: COLORS.body, ...NO_SCALE }}
         >
           {EMAIL}
         </a>
         <nav
           aria-label="Footer navigation"
           className="flex flex-wrap items-center gap-x-6 gap-y-2 md:justify-self-end"
-          style={{ color: COLORS.muted }}
+          style={{ color: COLORS.body }}
         >
           <Link to="/student" className={link} style={NO_SCALE}>
             Student portal
@@ -1055,7 +874,82 @@ function Footer() {
           </Link>
         </nav>
       </div>
-    </footer>
+    </motion.footer>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/*  Cookie consent                                                     */
+/* ------------------------------------------------------------------ */
+
+function CookieBanner() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (window.localStorage.getItem(COOKIE_KEY) === null) setVisible(true);
+    } catch {
+      setVisible(true);
+    }
+  }, []);
+
+  const choose = (value: "accepted" | "declined") => {
+    try {
+      window.localStorage.setItem(COOKIE_KEY, value);
+    } catch {
+      // Storage can be blocked (e.g. private mode); still hide for this visit.
+    }
+    setVisible(false);
+  };
+
+  if (!visible) return null;
+
+  return (
+    <div
+      role="region"
+      aria-label="Cookie consent"
+      className="fixed z-50 p-5 text-sm"
+      style={{
+        bottom: 24,
+        right: 24,
+        maxWidth: 320,
+        width: "calc(100vw - 48px)",
+        background: "rgba(255, 255, 255, 0.6)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        borderRadius: "12px",
+        boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+      }}
+    >
+      <p className="leading-relaxed" style={{ color: COLORS.body }}>
+        This site uses cookies to improve user experience.{" "}
+        <a href="/privacy" className="underline" style={{ color: COLORS.primary }}>
+          Privacy policy
+        </a>
+      </p>
+      <div className="mt-4 flex items-center gap-4">
+        <button
+          type="button"
+          onClick={() => choose("accepted")}
+          className="px-4 py-2 text-sm font-semibold"
+          style={{
+            background: COLORS.primary,
+            color: "#FFFFFF",
+            borderRadius: "8px",
+          }}
+        >
+          That&apos;s OK
+        </button>
+        <button
+          type="button"
+          onClick={() => choose("declined")}
+          className="text-sm"
+          style={{ background: "transparent", color: COLORS.body }}
+        >
+          Decline cookies
+        </button>
+      </div>
+    </div>
   );
 }
 
@@ -1066,23 +960,12 @@ function Footer() {
 export function LandingPage() {
   const reduced = useReducedMotion() ?? false;
 
-  useEffect(() => {
-    document.documentElement.classList.add("tl-dark");
-    return () => document.documentElement.classList.remove("tl-dark");
-  }, []);
-
   return (
     <main
-      className="relative min-h-screen overflow-x-clip text-white"
-      style={{ background: COLORS.bg }}
+      className="landing-page relative min-h-screen overflow-x-clip"
+      style={{ background: COLORS.bg, colorScheme: "light" }}
     >
       <style>{PAGE_CSS}</style>
-      <div
-        aria-hidden="true"
-        className="pointer-events-none fixed inset-0 z-0"
-        style={{ backgroundImage: NOISE }}
-      />
-      <CustomCursor reduced={reduced} />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -1099,15 +982,16 @@ export function LandingPage() {
           }),
         }}
       />
-      <Navbar reduced={reduced} />
+      <Navbar />
       <div className="relative z-10">
         <Hero reduced={reduced} />
         <Features reduced={reduced} />
         <HowItWorks reduced={reduced} />
         <Testimonial reduced={reduced} />
         <Faq reduced={reduced} />
-        <Footer />
+        <Footer reduced={reduced} />
       </div>
+      <CookieBanner />
     </main>
   );
 }

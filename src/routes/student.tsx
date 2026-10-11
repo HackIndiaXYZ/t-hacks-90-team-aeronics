@@ -7,7 +7,11 @@ import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { fetchStudentSubstitutions, verifyStudentAccess, type SubstitutionRecord } from "@/lib/cloud";
+import {
+  fetchStudentSubstitutions,
+  verifyStudentAccess,
+  type SubstitutionRecord,
+} from "@/lib/cloud";
 
 type StudentScheduleRow = {
   period: number;
@@ -119,7 +123,10 @@ function StudentAccessGate({
             />
           </div>
           {error && (
-            <p role="alert" className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive">
+            <p
+              role="alert"
+              className="rounded-lg border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive"
+            >
               {error}
             </p>
           )}
@@ -169,12 +176,13 @@ function StudentSchedule({
   const filteredSchedule = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
 
-    return schedule.filter((row) =>
-      (classFilter === "all" || row.classSection === classFilter) &&
-      [row.absentTeacherName, row.substituteName, row.classSection, `p${row.period}`]
-        .join(" ")
-        .toLowerCase()
-        .includes(normalizedQuery),
+    return schedule.filter(
+      (row) =>
+        (classFilter === "all" || row.classSection === classFilter) &&
+        [row.absentTeacherName, row.substituteName, row.classSection, `p${row.period}`]
+          .join(" ")
+          .toLowerCase()
+          .includes(normalizedQuery),
     );
   }, [classFilter, query, schedule]);
   const classes = useMemo(
@@ -183,7 +191,7 @@ function StudentSchedule({
   );
 
   return (
-    <main className="min-h-screen bg-black px-4 py-6 text-white sm:px-6 sm:py-10">
+    <main className="min-h-screen px-4 py-6 text-foreground sm:px-6 sm:py-10">
       <div className="mx-auto max-w-5xl">
         <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex items-start gap-3">
@@ -191,10 +199,10 @@ function StudentSchedule({
             <div>
               <p className="text-lg font-semibold tracking-tight">Timely — Student Noticeboard</p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
-                <span className="rounded-full border border-white/50 bg-white/10 px-2.5 py-1 font-medium text-white backdrop-blur-md">
+                <span className="rounded-full border border-primary/15 bg-white/30 px-2.5 py-1 font-medium text-foreground backdrop-blur-md">
                   Read-Only View
                 </span>
-                <span className="text-white/60">School ID: {schoolId}</span>
+                <span className="text-foreground/70">School ID: {schoolId}</span>
               </div>
             </div>
           </div>
@@ -212,26 +220,26 @@ function StudentSchedule({
           </div>
         </header>
 
-        <section className="glass-regular mb-6 rounded-2xl border border-white/50 bg-white/5 p-4 shadow-sm backdrop-blur-[10px] backdrop-saturate-[180%] sm:p-5">
+        <section className="glass-regular mb-6 rounded-2xl border border-primary/15 p-4 shadow-sm backdrop-blur-[10px] backdrop-saturate-[180%] sm:p-5">
           <div className="grid gap-4 sm:grid-cols-3">
-            <label className="flex min-w-0 flex-col gap-2 text-sm font-medium text-white/80">
+            <label className="flex min-w-0 flex-col gap-2 text-sm font-medium text-foreground/80">
               Date
               <span className="relative">
-                <CalendarDays className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-blue-700" />
+                <CalendarDays className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary" />
                 <input
                   type="date"
                   value={date}
                   onChange={(event) => setDate(event.target.value)}
-                  className="h-10 w-full rounded-xl border border-white/50 bg-white/70 pl-10 pr-3 text-sm text-slate-900 outline-none ring-blue-300 transition focus:ring-2"
+                  className="h-10 w-full rounded-xl border border-primary/15 bg-white/60 pl-10 pr-3 text-sm text-primary outline-none ring-primary/30 transition focus:ring-2"
                 />
               </span>
             </label>
-            <label className="flex min-w-0 flex-col gap-2 text-sm font-medium text-white/80">
+            <label className="flex min-w-0 flex-col gap-2 text-sm font-medium text-foreground/80">
               Class / Section
               <select
                 value={classFilter}
                 onChange={(event) => setClassFilter(event.target.value)}
-                className="h-10 w-full rounded-xl border border-white/50 bg-white/70 px-3 text-sm text-slate-900 outline-none ring-blue-300 transition focus:ring-2"
+                className="h-10 w-full rounded-xl border border-primary/15 bg-white/60 px-3 text-sm text-primary outline-none ring-primary/30 transition focus:ring-2"
               >
                 <option value="all">All Classes (Whole School)</option>
                 {classes.map((classSection) => (
@@ -241,16 +249,16 @@ function StudentSchedule({
                 ))}
               </select>
             </label>
-            <label className="flex min-w-0 flex-col gap-2 text-sm font-medium text-white/80">
+            <label className="flex min-w-0 flex-col gap-2 text-sm font-medium text-foreground/80">
               Search schedule
               <span className="relative">
-                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-blue-700" />
+                <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-primary" />
                 <input
                   type="search"
                   value={query}
                   onChange={(event) => setQuery(event.target.value)}
                   placeholder="Search class, subject, or teacher"
-                  className="h-10 w-full rounded-xl border border-white/50 bg-white/70 pl-10 pr-3 text-sm text-slate-900 outline-none placeholder:text-slate-500 ring-blue-300 transition focus:ring-2"
+                  className="h-10 w-full rounded-xl border border-primary/15 bg-white/60 pl-10 pr-3 text-sm text-primary outline-none placeholder:text-foreground/50 ring-primary/30 transition focus:ring-2"
                 />
               </span>
             </label>
@@ -259,18 +267,22 @@ function StudentSchedule({
 
         <section aria-live="polite" className="space-y-3">
           <div className="flex items-center justify-between gap-3">
-            <h1 className="text-xl font-semibold tracking-tight text-white">Today&apos;s substitutions</h1>
-            <p className="text-sm text-white/60">
+            <h1 className="text-xl font-semibold tracking-tight text-foreground">
+              Today&apos;s substitutions
+            </h1>
+            <p className="text-sm text-foreground/70">
               {filteredSchedule.length} of {schedule.length} periods
             </p>
           </div>
 
           {isLoading || schedule.length === 0 ? (
-            <div className="glass-regular rounded-2xl border border-white/50 bg-white/5 px-5 py-10 text-center text-sm text-white/60 shadow-sm backdrop-blur-[10px] backdrop-saturate-[180%]">
+            <div className="glass-regular rounded-2xl border border-primary/15 px-5 py-10 text-center text-sm text-foreground/70 shadow-sm backdrop-blur-[10px] backdrop-saturate-[180%]">
               No substitution
             </div>
           ) : (
-            filteredSchedule.map((row) => <ScheduleCard key={`${row.period}-${row.classSection}`} row={row} />)
+            filteredSchedule.map((row) => (
+              <ScheduleCard key={`${row.period}-${row.classSection}`} row={row} />
+            ))
           )}
         </section>
       </div>
@@ -282,31 +294,35 @@ function ScheduleCard({ row }: { row: StudentScheduleRow }) {
   const hasSubstitute = Boolean(row.substituteId);
 
   return (
-    <article className="glass-regular rounded-2xl border border-white/50 bg-white/5 p-4 shadow-sm backdrop-blur-[10px] backdrop-saturate-[180%] sm:p-5">
+    <article className="glass-regular rounded-2xl border border-primary/15 p-4 shadow-sm backdrop-blur-[10px] backdrop-saturate-[180%] sm:p-5">
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex min-w-0 items-start gap-3">
-          <span className="shrink-0 rounded-xl bg-blue-100 px-3 py-2 text-sm font-bold text-blue-900">
+          <span className="shrink-0 rounded-xl bg-accent px-3 py-2 text-sm font-bold text-primary">
             P{row.period}
           </span>
           <div className="min-w-0">
-            <p className="truncate text-base font-semibold text-white">
+            <p className="truncate text-base font-semibold text-foreground">
               P{row.period} · {row.classSection}
             </p>
-            <p className="mt-1 text-sm text-white/60">Regular teacher: {row.absentTeacherName}</p>
+            <p className="mt-1 text-sm text-foreground/70">
+              Regular teacher: {row.absentTeacherName}
+            </p>
           </div>
         </div>
         <div className="min-w-0 sm:text-right">
-          <p className="text-xs font-medium uppercase tracking-wide text-white/50">
+          <p className="text-xs font-medium uppercase tracking-wide text-foreground/60">
             {hasSubstitute ? `Substituted: ${row.substituteName}` : "Substitute teacher"}
           </p>
           <span
             className={`mt-1 inline-flex max-w-full rounded-full px-3 py-1.5 text-sm font-semibold ${
               hasSubstitute
                 ? "border border-emerald-200 bg-emerald-100/80 text-emerald-900"
-                : "border border-slate-200 bg-slate-100/80 text-slate-600"
+                : "border border-primary/15 bg-white/60 text-foreground/70"
             }`}
           >
-            <span className="truncate">{hasSubstitute ? row.substituteName : "No substitute assigned"}</span>
+            <span className="truncate">
+              {hasSubstitute ? row.substituteName : "No substitute assigned"}
+            </span>
           </span>
         </div>
       </div>
