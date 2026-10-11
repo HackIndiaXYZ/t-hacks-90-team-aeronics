@@ -154,22 +154,21 @@ function Index() {
 
           const cloudSaved = await fetchSavedDays();
           setSaved(cloudSaved);
-          const savedForDate = cloudSaved.find((entry) => entry.date === date);
-          if (savedForDate) setSchedule(savedForDate.rows);
         } else {
           // Load from localStorage for unauthenticated users
           setTeachers([]);
-          const localSaved = loadSaved();
-          setSaved(localSaved);
-          const savedForDate = localSaved.find((entry) => entry.date === date);
-          if (savedForDate) setSchedule(savedForDate.rows);
+          setSaved(loadSaved());
           setTeachersLoaded(true);
         }
         setDataLoaded(true);
       } catch (error) {
         console.error("Failed to load data:", error);
-        // Keep the dashboard empty if loading saved data fails.
-        setSaved(loadSaved());
+        if (user) {
+          // Never show another session's local history as this account's data.
+          setSyncError("Could not load your saved data. Please refresh the page.");
+        } else {
+          setSaved(loadSaved());
+        }
         setDataLoaded(true);
       }
     };
@@ -306,8 +305,12 @@ function Index() {
       }
     } catch (error) {
       console.error("Failed to delete schedule:", error);
-      // Fallback to localStorage
-      setSaved(deleteSaved(date));
+      // Keep the list as it is; falling back to localStorage would show the wrong data.
+      setSyncError(
+        error instanceof Error
+          ? `Could not delete the saved day: ${error.message}`
+          : "Could not delete the saved day. Please try again.",
+      );
     }
   };
 

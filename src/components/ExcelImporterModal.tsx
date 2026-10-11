@@ -30,7 +30,7 @@ const normalize = (value: unknown) =>
   String(value ?? "")
     .trim()
     .toLowerCase()
-    .replace(/[\/_-]+/g, " ")
+    .replace(/[/_-]+/g, " ")
     .replace(/\s+/g, " ");
 
 const categoryFrom = (value: unknown): Category | null => {

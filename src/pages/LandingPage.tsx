@@ -6,6 +6,7 @@ import {
   useMotionValueEvent,
   useReducedMotion,
   useScroll,
+  type MotionStyle,
   type Variants,
 } from "framer-motion";
 import {
@@ -478,14 +479,16 @@ function FeatureCard({
     <motion.article
       variants={variants}
       data-lift
-      style={{
-        ...GLASS,
-        width: 280,
-        flexShrink: 0,
-        padding: "32px 24px",
-        rotate: tilt,
-        marginTop: lift,
-      }}
+      style={
+        {
+          ...GLASS,
+          width: 280,
+          flexShrink: 0,
+          padding: "32px 24px",
+          rotate: tilt,
+          marginTop: lift,
+        } as MotionStyle
+      }
     >
       <Icon className="size-6" style={{ color: COLORS.primary }} aria-hidden="true" />
       <h3 className="mt-5" style={{ fontSize: 16, fontWeight: 700, color: COLORS.text }}>
@@ -792,7 +795,12 @@ function Faq({ reduced }: { reduced: boolean }) {
           {FAQS.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
-              <motion.article key={faq.question} variants={reveal} data-lift style={GLASS}>
+              <motion.article
+                key={faq.question}
+                variants={reveal}
+                data-lift
+                style={GLASS as MotionStyle}
+              >
                 <button
                   type="button"
                   onClick={() => setOpenIndex(isOpen ? null : index)}

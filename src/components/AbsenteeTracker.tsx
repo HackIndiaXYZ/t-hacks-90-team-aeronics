@@ -21,7 +21,7 @@ export function AbsenteeTracker({ teachers, absences, date, onDateChange, onChan
 
   useEffect(() => {
     setSelectedDay(dayIndexForDate(scheduleDate) ?? 1);
-  }, [date]);
+  }, [scheduleDate]);
 
   const toggleTeacher = (t: Teacher) => {
     if (get(t.id)) {
