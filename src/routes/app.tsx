@@ -104,6 +104,7 @@ function Index() {
   const { user, loading } = useAuth();
   const [tab, setTab] = useState<Tab>("generator");
   const [navOpen, setNavOpen] = useState(false);
+  const [headerCompact, setHeaderCompact] = useState(false);
   const [overrideIndex, setOverrideIndex] = useState<number | null>(null);
 
   const [teachers, setTeachers] = useState<Teacher[]>([]);
@@ -114,6 +115,13 @@ function Index() {
   const [teachersLoaded, setTeachersLoaded] = useState(false);
   const [schoolId, setSchoolId] = useState("");
   const [syncError, setSyncError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const updateHeader = () => setHeaderCompact(window.scrollY > 36);
+    updateHeader();
+    window.addEventListener("scroll", updateHeader, { passive: true });
+    return () => window.removeEventListener("scroll", updateHeader);
+  }, []);
 
   const activeAbsences = useMemo(() => {
     return absences.filter((absence) => absence.periods.length > 0);
@@ -465,7 +473,7 @@ function Index() {
       </div>
 
       <main className="min-w-0 flex-1 px-4 py-6 sm:px-5 md:px-8">
-        <header className="mb-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-4">
+        <header className={`app-page-header ${headerCompact ? "app-page-header-compact" : ""} mb-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-end sm:justify-between sm:gap-4`}>
           <div className="min-w-0">
             <h1 className="text-xl font-semibold tracking-tight sm:text-2xl">
               {tab === "roster"

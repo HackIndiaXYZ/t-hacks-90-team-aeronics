@@ -31,10 +31,10 @@ import { Logo } from "@/components/Logo";
 /* ------------------------------------------------------------------ */
 
 const COLORS = {
-  bg: "#BDEDFD",
-  primary: "#1E3A8A",
-  text: "#1E3A8A",
-  body: "rgba(30, 58, 138, 0.7)",
+  bg: "#F2F0E9",
+  primary: "#151515",
+  text: "#151515",
+  body: "rgba(21, 21, 21, 0.7)",
 };
 
 const EMAIL = "developerstimely@gmail.com";
@@ -42,12 +42,10 @@ const EMAIL = "developerstimely@gmail.com";
 const COOKIE_KEY = "cookie_consent";
 
 const GLASS: CSSProperties = {
-  background: "rgba(255, 255, 255, 0.01)",
-  backdropFilter: "blur(2px)",
-  WebkitBackdropFilter: "blur(2px)",
-  borderRadius: "16px",
-  border: "none",
-  boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+  background: "transparent",
+  borderRadius: "0",
+  border: "1px solid #151515",
+  boxShadow: "none",
 };
 
 const NAV_SPRING = { type: "spring" as const, stiffness: 300, damping: 30 };
@@ -60,7 +58,7 @@ const NO_SCALE: CSSProperties = { transform: "none" };
 const PAGE_CSS = `
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap");
 .landing-page {
-  color: #1E3A8A;
+  color: #151515;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 .landing-page h1,
@@ -69,7 +67,7 @@ const PAGE_CSS = `
 .landing-page h4,
 .landing-page h5,
 .landing-page h6 {
-  color: #1E3A8A;
+  color: #151515;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
   font-weight: 400;
 }
@@ -83,14 +81,14 @@ const PAGE_CSS = `
 }
 .landing-page h3 { font-size: 26px; }
 .landing-page p,
-.landing-page blockquote { color: rgba(30, 58, 138, 0.7); }
-.landing-page .text-white { color: #1E3A8A; }
+.landing-page blockquote { color: rgba(21, 21, 21, 0.7); }
+.landing-page .text-white { color: #151515; }
 .landing-page a {
   text-decoration: none !important;
   transition: color 0.15s ease, text-decoration-color 0.15s ease !important;
 }
 .landing-page a:hover {
-  color: #1E3A8A !important;
+  color: #151515 !important;
   text-decoration: underline !important;
 }
 .landing-page button {
@@ -100,10 +98,6 @@ const PAGE_CSS = `
 .landing-page a:hover,
 .landing-page button:hover,
 .landing-page [role="button"]:hover { transform: none !important; }
-.landing-page [data-lift] {
-  transition: translate 0.2s ease;
-}
-.landing-page [data-lift]:hover { translate: 0 -2px; }
 `;
 
 /* ------------------------------------------------------------------ */
@@ -207,9 +201,6 @@ const FAQS = [
 /*  Motion helpers                                                     */
 /* ------------------------------------------------------------------ */
 
-const FEATURE_TILTS = [-2.5, 1.8, -1.2, 2.4, -1.8, 1.2];
-const FEATURE_LIFTS = [0, 32, 12, 44, 6, 24];
-
 function makeReveal(reduced: boolean): Variants {
   return {
     hidden: { opacity: reduced ? 1 : 0, y: reduced ? 0 : 16 },
@@ -269,11 +260,12 @@ function Navbar() {
     paddingBottom: 10,
     paddingLeft: mobile ? 16 : 24,
     paddingRight: mobile ? 16 : 24,
-    borderRadius: 40,
-    background: "rgba(255, 255, 255, 0.01)",
-    backdropFilter: "blur(12px)",
-    WebkitBackdropFilter: "blur(12px)",
-    boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+    borderRadius: 999,
+    background: "rgba(242, 240, 233, 0.74)",
+    backdropFilter: "blur(14px)",
+    WebkitBackdropFilter: "blur(14px)",
+    border: "1px solid rgba(21, 21, 21, 0.22)",
+    boxShadow: "0 10px 28px rgba(21, 21, 21, 0.08)",
   };
 
   return (
@@ -292,7 +284,7 @@ function Navbar() {
         style={{
           boxSizing: "border-box",
           width: scrolled ? "calc(100% - 24px)" : "100%",
-          maxWidth: scrolled ? 600 : "100%",
+          maxWidth: "100%",
           margin: "0 auto",
           border: "none",
         }}
@@ -464,15 +456,11 @@ function FeatureCard({
   icon: Icon,
   title,
   copy,
-  tilt,
-  lift,
   variants,
 }: {
   icon: typeof Clock3;
   title: string;
   copy: string;
-  tilt: number;
-  lift: number;
   variants: Variants;
 }) {
   return (
@@ -485,8 +473,6 @@ function FeatureCard({
           width: 280,
           flexShrink: 0,
           padding: "32px 24px",
-          rotate: tilt,
-          marginTop: lift,
         } as MotionStyle
       }
     >
@@ -521,7 +507,6 @@ function Features({ reduced }: { reduced: boolean }) {
     window.addEventListener("resize", measure);
     return () => window.removeEventListener("resize", measure);
   }, []);
-
   const cards = [
     ...PROBLEMS.map((p) => ({
       key: p.title,
@@ -566,14 +551,12 @@ function Features({ reduced }: { reduced: boolean }) {
           className="flex w-max cursor-grab select-none items-start gap-6 py-10 pr-5 active:cursor-grabbing sm:pr-8"
           style={{ paddingLeft: "max(20px, calc((100vw - 72rem) / 2 + 32px))" }}
         >
-          {cards.map((card, index) => (
+          {cards.map((card) => (
             <FeatureCard
               key={card.key}
               icon={card.icon}
               title={card.title}
               copy={card.copy}
-              tilt={FEATURE_TILTS[index % FEATURE_TILTS.length] ?? 0}
-              lift={FEATURE_LIFTS[index % FEATURE_LIFTS.length] ?? 0}
               variants={reveal}
             />
           ))}
@@ -848,7 +831,7 @@ function Footer({ reduced }: { reduced: boolean }) {
       initial="hidden"
       whileInView="visible"
       viewport={VIEWPORT}
-      style={{ borderTop: "1px solid rgba(30, 58, 138, 0.12)" }}
+      style={{ borderTop: "1px solid #151515" }}
     >
       <div className="mx-auto grid max-w-6xl items-center gap-6 px-5 py-10 text-sm sm:px-8 md:grid-cols-3">
         <Link
@@ -922,11 +905,10 @@ function CookieBanner() {
         right: 24,
         maxWidth: 320,
         width: "calc(100vw - 48px)",
-        background: "rgba(255, 255, 255, 0.6)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
-        borderRadius: "12px",
-        boxShadow: "0 4px 30px rgba(0, 0, 0, 0.1)",
+        background: COLORS.bg,
+        border: "1px solid #151515",
+        borderRadius: 0,
+        boxShadow: "none",
       }}
     >
       <p className="leading-relaxed" style={{ color: COLORS.body }}>

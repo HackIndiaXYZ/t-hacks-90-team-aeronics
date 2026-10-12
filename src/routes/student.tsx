@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { CalendarDays, Search } from "lucide-react";
-import { useMemo, useState, type FormEvent } from "react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
 
 import { Logo } from "@/components/Logo";
 import { Button } from "@/components/ui/button";
@@ -151,6 +151,14 @@ function StudentSchedule({
   const [date, setDate] = useState(todayIso);
   const [query, setQuery] = useState("");
   const [classFilter, setClassFilter] = useState("all");
+  const [headerCompact, setHeaderCompact] = useState(false);
+
+  useEffect(() => {
+    const updateHeader = () => setHeaderCompact(window.scrollY > 36);
+    updateHeader();
+    window.addEventListener("scroll", updateHeader, { passive: true });
+    return () => window.removeEventListener("scroll", updateHeader);
+  }, []);
   const { data: substitutions = [], isLoading } = useQuery<SubstitutionRecord[]>({
     queryKey: ["substitutions", schoolId, date],
     queryFn: () => fetchStudentSubstitutions(schoolId, passcode, date),
@@ -193,7 +201,7 @@ function StudentSchedule({
   return (
     <main className="min-h-screen px-4 py-6 text-foreground sm:px-6 sm:py-10">
       <div className="mx-auto max-w-5xl">
-        <header className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <header className={`app-page-header ${headerCompact ? "app-page-header-compact" : ""} mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between`}>
           <div className="flex items-start gap-3">
             <Logo size="md" />
             <div>

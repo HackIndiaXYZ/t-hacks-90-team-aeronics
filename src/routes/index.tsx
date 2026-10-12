@@ -121,56 +121,6 @@ const faqs = [
   },
 ];
 
-function useCursor() {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const desktopPointer = window.matchMedia("(pointer: fine)");
-    if (!desktopPointer.matches) return;
-
-    document.body.classList.add("landing-cursor-active");
-
-    let mouseX = 0;
-    let mouseY = 0;
-    let ringX = 0;
-    let ringY = 0;
-    let frame = 0;
-
-    const move = (event: MouseEvent) => {
-      mouseX = event.clientX;
-      mouseY = event.clientY;
-      if (dotRef.current) dotRef.current.style.transform = `translate3d(${mouseX}px, ${mouseY}px, 0)`;
-    };
-    const animate = () => {
-      ringX += (mouseX - ringX) * 0.1;
-      ringY += (mouseY - ringY) * 0.1;
-      if (ringRef.current) ringRef.current.style.transform = `translate3d(${ringX}px, ${ringY}px, 0)`;
-      frame = requestAnimationFrame(animate);
-    };
-
-    document.addEventListener("mousemove", move);
-    frame = requestAnimationFrame(animate);
-    return () => {
-      document.removeEventListener("mousemove", move);
-      cancelAnimationFrame(frame);
-      document.body.classList.remove("landing-cursor-active");
-    };
-  }, []);
-
-  return { dotRef, ringRef };
-}
-
-function CustomCursor() {
-  const { dotRef, ringRef } = useCursor();
-  return (
-    <>
-      <div ref={dotRef} className="timely-cursor-dot" aria-hidden="true" />
-      <div ref={ringRef} className="timely-cursor-ring" aria-hidden="true" />
-    </>
-  );
-}
-
 function SupportOptions() {
   const [open, setOpen] = useState<"feature" | "support" | null>(null);
   const [copied, setCopied] = useState(false);
@@ -194,7 +144,7 @@ function SupportOptions() {
     <div ref={containerRef} className="support-options">
       {(["feature", "support"] as const).map((type) => {
         const isOpen = open === type;
-        const label = type === "feature" ? "💬 Suggest a Feature" : "🛠 Get Support";
+        const label = type === "feature" ? "Suggest a feature" : "Get support";
         return (
           <motion.div key={type} layout className={isOpen ? "glass support-option support-option-open" : "support-option"}>
             <button type="button" className="support-pill" onClick={() => setOpen(isOpen ? null : type)} aria-expanded={isOpen}>
@@ -220,7 +170,6 @@ function Landing() {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   return (
     <main className="timely-landing">
-      <CustomCursor />
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
