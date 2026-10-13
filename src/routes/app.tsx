@@ -338,7 +338,7 @@ function Index() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col md:flex-row">
+    <div className="dashboard-shell flex min-h-screen flex-col md:flex-row">
       <motion.aside
         initial={{ opacity: 0, x: -18 }}
         animate={{ opacity: 1, x: 0 }}
@@ -346,7 +346,7 @@ function Index() {
         className="app-sidebar no-print sticky top-0 hidden h-screen w-60 shrink-0 flex-col px-4 py-6 text-foreground backdrop-blur-[12px] backdrop-saturate-[180%] md:flex"
       >
         <Link to="/" className="flex items-center gap-2 px-2">
-          <Logo size="md" className="shrink-0" />
+          <Logo size="md" className="dashboard-brand-logo shrink-0" />
           <div>
             <p className="text-lg font-semibold tracking-tight text-sidebar-accent-foreground">
               Timely
@@ -362,7 +362,9 @@ function Index() {
               whileTap={{ scale: 0.98 }}
               className={cn(
                 "relative flex items-center gap-3 rounded-lg px-3 py-2 text-sm",
-                tab === item.id ? "text-foreground" : "hover:bg-secondary/60",
+                tab === item.id
+                  ? "text-foreground font-semibold"
+                  : "hover:bg-secondary/60",
               )}
             >
               {tab === item.id && (
@@ -419,11 +421,11 @@ function Index() {
           </SheetTrigger>
           <SheetContent
             side="left"
-            className="glass-regular glass-highlight w-64 border-sidebar-border bg-white/5 text-foreground backdrop-blur-[12px] backdrop-saturate-[180%]"
+            className="dashboard-mobile-sheet glass-regular glass-highlight w-64 border-sidebar-border bg-white/5 text-foreground backdrop-blur-[12px] backdrop-saturate-[180%]"
           >
             <SheetHeader>
               <SheetTitle className="flex items-center gap-2 text-sidebar-accent-foreground">
-                <Logo size="sm" /> Timely
+                <Logo size="sm" className="dashboard-brand-logo" /> Timely
               </SheetTitle>
             </SheetHeader>
             <nav className="mt-2 flex flex-col gap-1 px-2">
@@ -437,7 +439,9 @@ function Index() {
                   whileTap={{ scale: 0.98 }}
                   className={cn(
                     "relative flex items-center gap-3 rounded-lg px-3 py-2 text-left text-sm",
-                    tab === item.id ? "text-foreground" : "hover:bg-secondary/60",
+                    tab === item.id
+                      ? "text-foreground font-semibold"
+                      : "hover:bg-secondary/60",
                   )}
                 >
                   {tab === item.id && (
@@ -462,7 +466,7 @@ function Index() {
           </SheetContent>
         </Sheet>
         <Link to="/" className="flex min-w-0 items-center gap-2">
-          <Logo size="sm" />
+          <Logo size="sm" className="dashboard-brand-logo" />
           <div className="min-w-0">
             <p className="truncate text-sm font-semibold text-sidebar-accent-foreground">
               {NAV.find((n) => n.id === tab)?.label}
@@ -810,7 +814,7 @@ function Stat({
     <div
       className={cn(
         "panel data-panel px-5 py-4",
-        tone === "warn" && "border-l-4 border-l-destructive bg-destructive/5",
+        tone === "warn" && "dashboard-unassigned-stat border-l-4 border-l-destructive",
       )}
     >
       <p className="text-xs uppercase tracking-wide text-muted-foreground">{label}</p>
@@ -818,14 +822,13 @@ function Stat({
         <p
           className={cn(
             "text-2xl font-semibold",
-            tone === "warn" && "text-destructive",
             tone === "ok" && "text-success",
           )}
         >
           {value}
         </p>
         {tone === "warn" && (
-          <AlertTriangle className="size-5 text-destructive" aria-label="Needs attention" />
+          <AlertTriangle className="size-5 text-foreground" aria-label="Needs attention" />
         )}
       </div>
     </div>

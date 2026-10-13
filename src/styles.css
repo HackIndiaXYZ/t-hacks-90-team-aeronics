@@ -1183,3 +1183,383 @@ html { background: #bdedfd; color-scheme: light; }
   .editorial-wave span { animation: none; }
   .timely-landing .landing-navbar { transition: none !important; }
 }
+
+@layer base {
+/* Dashboard-only warm glass theme. */
+.dashboard-shell {
+  --font-sans: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-background: #fdf4dc;
+  --color-foreground: #1a1a1a;
+  --color-card: rgba(255, 255, 255, 0.4);
+  --color-card-foreground: #1a1a1a;
+  --color-popover: #fffdf7;
+  --color-popover-foreground: #1a1a1a;
+  --color-primary: #1e3a8a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: rgba(255, 255, 255, 0.4);
+  --color-secondary-foreground: #1a1a1a;
+  --color-muted: rgba(26, 26, 26, 0.05);
+  --color-muted-foreground: rgba(26, 26, 26, 0.6);
+  --color-accent: rgba(30, 58, 138, 0.1);
+  --color-accent-foreground: #1e3a8a;
+  --color-destructive: #cc0000;
+  --color-destructive-foreground: #ffffff;
+  --color-success: #006633;
+  --color-success-foreground: #ffffff;
+  --color-warning: #cc0000;
+  --color-warning-foreground: #ffffff;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-input: rgba(0, 0, 0, 0.12);
+  --color-ring: #1e3a8a;
+  --color-sidebar: rgba(255, 255, 255, 0.15);
+  --color-sidebar-foreground: #1a1a1a;
+  --color-sidebar-accent: rgba(0, 0, 0, 0.08);
+  --color-sidebar-accent-foreground: #1a1a1a;
+  --color-sidebar-border: rgba(0, 0, 0, 0.08);
+  --color-brand: #1e3a8a;
+  --color-brand-light: #1e3a8a;
+  --color-accent-blue: #1e3a8a;
+  --color-accent-sky: #1e3a8a;
+  --color-accent-pink: #1e3a8a;
+  --radius: 0.5rem;
+  min-height: 100vh;
+  background: #fdf4dc;
+  color: #1a1a1a;
+  font-family: var(--font-sans);
+}
+
+.dashboard-shell :is(h1, h2, h3, h4, h5, h6) {
+  color: #1a1a1a !important;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace !important;
+}
+
+.dashboard-shell .text-muted-foreground,
+.dashboard-shell [class~="text-sidebar-foreground/70"] {
+  color: rgba(26, 26, 26, 0.6) !important;
+}
+
+.dashboard-shell .app-sidebar {
+  background: rgba(255, 255, 255, 0.15) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(12px) !important;
+  border: 0 !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  color: #1a1a1a !important;
+}
+
+.dashboard-shell .app-sidebar .dashboard-brand-logo {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.dashboard-shell .app-sidebar .text-sidebar-accent-foreground,
+.dashboard-shell .app-sidebar .text-sidebar-foreground {
+  color: #1a1a1a !important;
+}
+
+.dashboard-shell .app-sidebar nav button {
+  border: 0 !important;
+  border-radius: 6px !important;
+  color: #1a1a1a !important;
+  font-weight: 400;
+}
+
+.dashboard-shell .app-sidebar nav button:has(.sidebar-active-pill) {
+  font-weight: 600;
+}
+
+.dashboard-shell .app-sidebar .sidebar-active-pill {
+  background: rgba(0, 0, 0, 0.08) !important;
+  border: 0 !important;
+  border-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+.dashboard-shell .app-sidebar nav button:hover,
+.dashboard-shell .app-sidebar a:hover {
+  background: rgba(0, 0, 0, 0.08) !important;
+  color: #1a1a1a !important;
+}
+
+.dashboard-shell > .glass-clear {
+  background: rgba(255, 255, 255, 0.15) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(12px) !important;
+  border-color: rgba(0, 0, 0, 0.08) !important;
+  color: #1a1a1a !important;
+}
+
+.dashboard-shell .dashboard-brand-logo {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.dashboard-shell .panel,
+.dashboard-shell .data-panel,
+body:has(.dashboard-shell) [role="dialog"] {
+  --font-sans: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-background: #fdf4dc;
+  --color-foreground: #1a1a1a;
+  --color-primary: #1e3a8a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: rgba(255, 255, 255, 0.4);
+  --color-secondary-foreground: #1a1a1a;
+  --color-muted: rgba(26, 26, 26, 0.05);
+  --color-muted-foreground: rgba(26, 26, 26, 0.6);
+  --color-accent: rgba(30, 58, 138, 0.1);
+  --color-accent-foreground: #1e3a8a;
+  --color-destructive: #cc0000;
+  --color-success: #006633;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-input: rgba(0, 0, 0, 0.12);
+  --color-ring: #1e3a8a;
+  background: rgba(255, 255, 255, 0.4) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+  color: #1a1a1a !important;
+}
+
+body:has(.dashboard-shell) {
+  --font-sans: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-background: #fdf4dc;
+  --color-foreground: #1a1a1a;
+  --color-primary: #1e3a8a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: rgba(255, 255, 255, 0.4);
+  --color-secondary-foreground: #1a1a1a;
+  --color-muted: rgba(26, 26, 26, 0.05);
+  --color-muted-foreground: rgba(26, 26, 26, 0.6);
+  --color-accent: rgba(30, 58, 138, 0.1);
+  --color-accent-foreground: #1e3a8a;
+  --color-destructive: #cc0000;
+  --color-success: #006633;
+  --color-warning: #cc0000;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-input: rgba(0, 0, 0, 0.12);
+  --color-ring: #1e3a8a;
+  --color-sidebar: rgba(255, 255, 255, 0.15);
+  --color-sidebar-foreground: #1a1a1a;
+  --color-sidebar-accent: rgba(0, 0, 0, 0.08);
+  --color-sidebar-accent-foreground: #1a1a1a;
+  --color-sidebar-border: rgba(0, 0, 0, 0.08);
+}
+
+.dashboard-shell .panel > header,
+.dashboard-shell .data-panel > header {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.dashboard-shell .panel table thead tr,
+.dashboard-shell .panel table thead th {
+  background: rgba(255, 255, 255, 0.4) !important;
+  color: rgba(26, 26, 26, 0.6) !important;
+}
+
+.dashboard-shell .panel table tbody tr,
+.dashboard-shell .panel .divide-y > :not([hidden]) ~ :not([hidden]) {
+  border-color: rgba(0, 0, 0, 0.08) !important;
+}
+
+.dashboard-shell .panel table tbody tr:hover {
+  background: rgba(255, 255, 255, 0.35) !important;
+}
+
+.dashboard-shell :is(input, select, textarea) {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 6px !important;
+  color: #1a1a1a !important;
+}
+
+.dashboard-shell :is(input, select, textarea):focus {
+  outline: 2px solid #1e3a8a !important;
+  outline-offset: 2px;
+}
+
+.dashboard-shell :is(.rounded-lg, .rounded-md, .rounded-xl, .rounded-2xl) {
+  border-radius: 8px !important;
+}
+
+.dashboard-shell .rounded-full {
+  border-radius: 9999px !important;
+}
+
+.dashboard-shell button.bg-primary,
+body:has(.dashboard-shell) [role="dialog"] button.bg-primary {
+  background: #1a1a1a !important;
+  border-radius: 6px !important;
+  color: #ffffff !important;
+}
+
+.dashboard-shell .dashboard-unassigned-stat {
+  border-left: 4px solid #cc0000 !important;
+}
+
+.dashboard-shell .text-warning,
+.dashboard-shell .text-destructive {
+  color: #cc0000 !important;
+}
+
+.dashboard-shell [data-availability="busy"],
+body:has(.dashboard-shell) [role="dialog"] [data-availability="busy"] {
+  background: rgba(255, 100, 100, 0.15) !important;
+  border: 1px solid rgba(255, 100, 100, 0.3) !important;
+  color: #cc0000 !important;
+}
+
+.dashboard-shell [data-availability="free"],
+body:has(.dashboard-shell) [role="dialog"] [data-availability="free"] {
+  background: rgba(0, 180, 100, 0.15) !important;
+  border: 1px solid rgba(0, 180, 100, 0.3) !important;
+  color: #006633 !important;
+}
+
+.dashboard-shell [data-selected="true"] {
+  outline: 2px solid #1e3a8a !important;
+  outline-offset: 1px;
+}
+
+body:has(.dashboard-shell) [role="dialog"] :is(h1, h2, h3, h4, h5, h6) {
+  color: #1a1a1a !important;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace !important;
+}
+
+body:has(.dashboard-shell) [role="dialog"] .text-muted-foreground {
+  color: rgba(26, 26, 26, 0.6) !important;
+}
+
+body:has(.dashboard-shell) [role="dialog"] :is(input, select, textarea):focus {
+  outline: 2px solid #1e3a8a !important;
+  outline-offset: 2px;
+}
+
+body:has(.dashboard-shell) [role="dialog"] button > span:last-child > span.text-destructive {
+  background: rgba(255, 100, 100, 0.15) !important;
+  border: 1px solid rgba(255, 100, 100, 0.3) !important;
+  border-radius: 6px;
+  color: #cc0000 !important;
+  padding: 2px 6px;
+}
+
+body:has(.dashboard-shell) [role="dialog"] button > span:last-child > span.text-success {
+  background: rgba(0, 180, 100, 0.15) !important;
+  border: 1px solid rgba(0, 180, 100, 0.3) !important;
+  border-radius: 6px;
+  color: #006633 !important;
+  padding: 2px 6px;
+}
+
+body:has(.dashboard-shell) .dashboard-mobile-sheet {
+  background: rgba(255, 255, 255, 0.15) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  backdrop-filter: blur(12px) !important;
+  border-right: 1px solid rgba(0, 0, 0, 0.08) !important;
+  color: #1a1a1a !important;
+}
+
+.student-portal {
+  --font-sans: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-background: #fdf4dc;
+  --color-foreground: #1a1a1a;
+  --color-primary: #1a1a1a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: rgba(255, 255, 255, 0.4);
+  --color-secondary-foreground: #1a1a1a;
+  --color-muted: rgba(26, 26, 26, 0.05);
+  --color-muted-foreground: rgba(26, 26, 26, 0.6);
+  --color-accent: rgba(0, 0, 0, 0.06);
+  --color-accent-foreground: #1a1a1a;
+  --color-destructive: #cc0000;
+  --color-border: rgba(0, 0, 0, 0.08);
+  --color-input: rgba(0, 0, 0, 0.12);
+  --color-ring: #1a1a1a;
+  min-height: 100vh;
+  background: #fdf4dc !important;
+  color: #1a1a1a !important;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace !important;
+}
+
+body:has(.student-portal) {
+  background: #fdf4dc !important;
+  color: #1a1a1a !important;
+}
+
+.student-portal :is(h1, h2, h3, h4, h5, h6) {
+  color: #1a1a1a !important;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace !important;
+}
+
+.student-portal a,
+.student-portal .text-primary {
+  color: #1a1a1a !important;
+}
+
+.student-portal .text-muted-foreground,
+.student-portal [class*="text-foreground/"] {
+  color: rgba(26, 26, 26, 0.6) !important;
+}
+
+.student-portal .student-brand-logo {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.student-portal .panel,
+.student-portal .glass-regular {
+  background: rgba(255, 255, 255, 0.4) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 8px !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+  color: #1a1a1a !important;
+}
+
+.student-portal input,
+.student-portal select {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(0, 0, 0, 0.12) !important;
+  border-radius: 6px !important;
+  color: #1a1a1a !important;
+}
+
+.student-portal input:focus,
+.student-portal select:focus {
+  outline: 2px solid #1a1a1a !important;
+  outline-offset: 2px;
+}
+
+.student-portal button.bg-primary {
+  background: #1a1a1a !important;
+  border-radius: 6px !important;
+  color: #ffffff !important;
+}
+
+.student-portal .student-home-button {
+  display: inline-flex;
+  min-height: 2.5rem;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+  border: 1px solid #1a1a1a !important;
+  border-radius: 6px !important;
+  background: rgba(255, 255, 255, 0.2) !important;
+  padding: 0.5rem 0.75rem;
+  color: #1a1a1a !important;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-decoration: none !important;
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+}
+
+.student-portal .student-home-button:hover {
+  background: rgba(0, 0, 0, 0.06) !important;
+}
+
+}

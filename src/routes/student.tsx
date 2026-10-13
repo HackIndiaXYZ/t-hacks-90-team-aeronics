@@ -90,11 +90,16 @@ function StudentAccessGate({
   };
 
   return (
-    <main className="flex min-h-screen items-center justify-center px-4 py-10">
-      <section className="panel w-full max-w-md px-5 py-6">
-        <div className="mb-6 flex items-center justify-center gap-2">
-          <Logo size="md" />
-          <span className="text-lg font-semibold tracking-tight">Timely</span>
+    <main className="student-portal flex min-h-screen items-center justify-center px-4 py-10">
+      <section className="student-access-card panel w-full max-w-md px-5 py-6">
+        <div className="mb-6 flex items-center justify-between gap-3">
+          <Link to="/" className="flex items-center gap-2">
+            <Logo size="md" className="student-brand-logo" />
+            <span className="text-lg font-semibold tracking-tight">Timely</span>
+          </Link>
+          <Link to="/" className="student-home-button">
+            Back to homepage
+          </Link>
         </div>
         <h1 className="text-xl font-semibold tracking-tight">Student Schedule Access</h1>
         <p className="mt-1 text-sm text-muted-foreground">
@@ -199,11 +204,11 @@ function StudentSchedule({
   );
 
   return (
-    <main className="min-h-screen px-4 py-6 text-foreground sm:px-6 sm:py-10">
+    <main className="student-portal min-h-screen px-4 py-6 text-foreground sm:px-6 sm:py-10">
       <div className="mx-auto max-w-5xl">
         <header className={`app-page-header ${headerCompact ? "app-page-header-compact" : ""} mb-8 flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between`}>
           <div className="flex items-start gap-3">
-            <Logo size="md" />
+            <Logo size="md" className="student-brand-logo" />
             <div>
               <p className="text-lg font-semibold tracking-tight">Timely — Student Noticeboard</p>
               <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
@@ -222,8 +227,8 @@ function StudentSchedule({
             >
               Change school
             </button>
-            <Link to="/" className="text-accent-sky underline-offset-4 hover:underline">
-              Back to Timely
+            <Link to="/" className="student-home-button">
+              Back to homepage
             </Link>
           </div>
         </header>

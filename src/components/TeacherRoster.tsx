@@ -239,7 +239,10 @@ export function TeacherRoster({ teachers, onChange, date }: Props) {
                         aria-label={`Class assigned to period ${p}`}
                       />
                     ) : (
-                      <span className={slotClass(!dailySchedule(row)[p].isFree, false)}>
+                      <span
+                        data-availability={dailySchedule(row)[p].isFree ? "free" : "busy"}
+                        className={slotClass(!dailySchedule(row)[p].isFree, false)}
+                      >
                         {dailySchedule(row)[p].isFree
                           ? "Free"
                           : dailySchedule(row)[p].classSection || "Busy"}
@@ -352,7 +355,10 @@ export function TeacherRoster({ teachers, onChange, date }: Props) {
                           aria-label={`Class assigned to period ${p}`}
                         />
                       ) : (
-                        <span className={slotClass(!daySchedule[p].isFree, false)}>
+                        <span
+                          data-availability={daySchedule[p].isFree ? "free" : "busy"}
+                          className={slotClass(!daySchedule[p].isFree, false)}
+                        >
                           {daySchedule[p].isFree ? "Free" : daySchedule[p].classSection || "Busy"}
                         </span>
                       )}

@@ -290,6 +290,7 @@ export function ExcelImporterModal({ onImport }: Props) {
                               <span
                                 key={period}
                                 title={`P${period}: ${teacher.busy[period] ? "Busy" : "Free"}`}
+                                data-availability={teacher.busy[period] ? "busy" : "free"}
                                 className={`rounded px-1 py-1 text-center text-[10px] font-semibold ${
                                   teacher.busy[period]
                                     ? "bg-muted text-foreground/70"

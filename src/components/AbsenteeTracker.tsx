@@ -135,6 +135,8 @@ export function AbsenteeTracker({ teachers, absences, date, onDateChange, onChan
                     <button
                       key={p}
                       type="button"
+                      data-availability={assigned ? "busy" : "free"}
+                      data-selected={selected ? "true" : "false"}
                       disabled={!absence}
                       onClick={() => togglePeriod(t.id, p)}
                       title={

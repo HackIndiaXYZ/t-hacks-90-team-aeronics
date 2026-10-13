@@ -31,10 +31,10 @@ import { Logo } from "@/components/Logo";
 /* ------------------------------------------------------------------ */
 
 const COLORS = {
-  bg: "#F2F0E9",
-  primary: "#151515",
-  text: "#151515",
-  body: "rgba(21, 21, 21, 0.7)",
+  bg: "#FDF4DC",
+  primary: "#1E3A8A",
+  text: "#1A1A1A",
+  body: "rgba(26, 26, 26, 0.7)",
 };
 
 const EMAIL = "developerstimely@gmail.com";
@@ -44,7 +44,7 @@ const COOKIE_KEY = "cookie_consent";
 const GLASS: CSSProperties = {
   background: "transparent",
   borderRadius: "0",
-  border: "1px solid #151515",
+  border: "1px solid #1A1A1A",
   boxShadow: "none",
 };
 
@@ -58,7 +58,7 @@ const NO_SCALE: CSSProperties = { transform: "none" };
 const PAGE_CSS = `
 @import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&display=swap");
 .landing-page {
-  color: #151515;
+  color: #1A1A1A;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
 }
 .landing-page h1,
@@ -67,7 +67,7 @@ const PAGE_CSS = `
 .landing-page h4,
 .landing-page h5,
 .landing-page h6 {
-  color: #151515;
+  color: #1A1A1A;
   font-family: 'JetBrains Mono', 'Courier New', monospace;
   font-weight: 400;
 }
@@ -81,14 +81,14 @@ const PAGE_CSS = `
 }
 .landing-page h3 { font-size: 26px; }
 .landing-page p,
-.landing-page blockquote { color: rgba(21, 21, 21, 0.7); }
-.landing-page .text-white { color: #151515; }
+.landing-page blockquote { color: rgba(26, 26, 26, 0.7); }
+.landing-page .text-white { color: #1A1A1A; }
 .landing-page a {
   text-decoration: none !important;
   transition: color 0.15s ease, text-decoration-color 0.15s ease !important;
 }
 .landing-page a:hover {
-  color: #151515 !important;
+  color: #1A1A1A !important;
   text-decoration: underline !important;
 }
 .landing-page button {
@@ -98,6 +98,18 @@ const PAGE_CSS = `
 .landing-page a:hover,
 .landing-page button:hover,
 .landing-page [role="button"]:hover { transform: none !important; }
+@keyframes feature-card-scroll {
+  to { transform: translateX(-50%); }
+}
+.feature-marquee-track {
+  animation: feature-card-scroll 20s linear infinite;
+}
+.feature-marquee:hover .feature-marquee-track {
+  animation-play-state: paused;
+}
+@media (prefers-reduced-motion: reduce) {
+  .feature-marquee-track { animation: none; }
+}
 `;
 
 /* ------------------------------------------------------------------ */
@@ -110,7 +122,7 @@ const TICKER_FEATURES =
 const PROBLEMS = [
   {
     icon: Clock3,
-    title: "Done in 90 seconds",
+    title: "Done in minutes without any hassle",
     copy: "From first absence to finished plan. Before the staffroom gets loud.",
   },
   {
@@ -224,7 +236,7 @@ function makeStagger(reduced: boolean, gap = 0.08): Variants {
 /* ------------------------------------------------------------------ */
 
 const navLinkClass =
-  "whitespace-nowrap rounded-lg px-3 py-1.5 text-[13px] transition-colors sm:text-sm";
+  "whitespace-nowrap rounded-lg px-1 py-1 text-[11px] transition-colors min-[400px]:px-2 min-[400px]:text-xs sm:px-3 sm:py-1.5 sm:text-sm";
 
 function Navbar() {
   const { scrollY } = useScroll();
@@ -252,6 +264,7 @@ function Navbar() {
     background: "rgba(255, 255, 255, 0)",
     backdropFilter: "blur(0px)",
     WebkitBackdropFilter: "blur(0px)",
+    border: "1px solid transparent",
     boxShadow: "0 4px 30px rgba(0, 0, 0, 0)",
   };
 
@@ -261,11 +274,11 @@ function Navbar() {
     paddingLeft: mobile ? 16 : 24,
     paddingRight: mobile ? 16 : 24,
     borderRadius: 999,
-    background: "rgba(242, 240, 233, 0.74)",
+    background: "rgba(253, 244, 220, 0.82)",
     backdropFilter: "blur(14px)",
     WebkitBackdropFilter: "blur(14px)",
-    border: "1px solid rgba(21, 21, 21, 0.22)",
-    boxShadow: "0 10px 28px rgba(21, 21, 21, 0.08)",
+    border: "1px solid rgba(26, 26, 26, 0.22)",
+    boxShadow: "0 10px 28px rgba(26, 26, 26, 0.08)",
   };
 
   return (
@@ -283,10 +296,10 @@ function Navbar() {
         className="pointer-events-auto flex items-center justify-between"
         style={{
           boxSizing: "border-box",
-          width: scrolled ? "calc(100% - 24px)" : "100%",
-          maxWidth: "100%",
+          width: scrolled ? "max-content" : "100%",
+          maxWidth: scrolled ? "calc(100vw - 24px)" : "100%",
+          gap: mobile ? 12 : 24,
           margin: "0 auto",
-          border: "none",
         }}
       >
         <Link
@@ -315,8 +328,13 @@ function Navbar() {
           <Link
             to="/auth"
             search={{ tab: "signup" }}
-            className="whitespace-nowrap rounded-lg px-3.5 py-1.5 text-[13px] font-normal text-white sm:text-sm"
-            style={{ background: COLORS.primary, color: "#FFFFFF", ...NO_SCALE }}
+            className="whitespace-nowrap rounded-lg border px-2 py-1 text-[11px] font-normal min-[400px]:px-2.5 min-[400px]:text-xs sm:px-3.5 sm:py-1.5 sm:text-sm"
+            style={{
+              background: "transparent",
+              borderColor: COLORS.text,
+              color: COLORS.text,
+              ...NO_SCALE,
+            }}
           >
             Sign up
           </Link>
@@ -347,7 +365,7 @@ function Hero({ reduced }: { reduced: boolean }) {
               }}
             >
               <Users className="size-5" style={{ color: COLORS.primary }} aria-hidden="true" />
-              For school admins who hate Monday mornings
+              SUBSTITUTE MANAGEMENT MADE EASIER
             </span>
           </div>
 
@@ -361,14 +379,15 @@ function Hero({ reduced }: { reduced: boolean }) {
               color: COLORS.text,
             }}
           >
-            Your substitute plan, before the first bell.
+            FAIR SUBSTITUTION PLANS. GENERATED IN MINUTES.
           </h1>
 
           <p
             className="mx-auto mt-6 text-base leading-relaxed sm:text-lg 2xl:text-xl"
             style={{ maxWidth: 560, color: COLORS.body }}
           >
-            Log who&apos;s absent. Timely handles the rest — fairly, instantly, without the chaos.
+            Mark absences. Timely generates a conflict-free, fair substitution plan instantly — no
+            manual coordination required.
           </p>
 
           <div className="mt-10 flex justify-center">
@@ -490,23 +509,6 @@ function FeatureCard({
 function Features({ reduced }: { reduced: boolean }) {
   const reveal = makeReveal(reduced);
   const stagger = makeStagger(reduced);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-  const [constraints, setConstraints] = useState({ left: 0, right: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
-
-  useEffect(() => {
-    const measure = () => {
-      const container = containerRef.current;
-      const track = trackRef.current;
-      if (!container || !track) return;
-      setConstraints({ left: Math.min(0, container.offsetWidth - track.scrollWidth), right: 0 });
-    };
-    measure();
-    window.addEventListener("resize", measure);
-    return () => window.removeEventListener("resize", measure);
-  }, []);
   const cards = [
     ...PROBLEMS.map((p) => ({
       key: p.title,
@@ -527,64 +529,41 @@ function Features({ reduced }: { reduced: boolean }) {
       <div className="mx-auto max-w-6xl px-5 sm:px-8">
         <SectionHeading
           eyebrow="Why this matters"
-          title="Built for real schools"
-          copy="When someone is absent, the admin team carries the pressure. Timely helps you act quickly without losing fairness."
+          title="Designed for School Administration"
+          copy="Unplanned absences create administrative burden and scheduling conflicts. Timely automates the substitution process — ensuring every assignment is fair, transparent, and audit-ready."
           variants={reveal}
         />
       </div>
       <div
-        ref={containerRef}
-        className="relative mt-12 w-full overflow-hidden"
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
-        onMouseMove={(event) => setMousePos({ x: event.clientX, y: event.clientY })}
+        className="feature-marquee relative mt-12 w-full overflow-hidden"
+        style={{ paddingLeft: "max(20px, calc((100vw - 72rem) / 2 + 32px))" }}
       >
         <motion.div
-          ref={trackRef}
-          drag="x"
-          dragConstraints={constraints}
-          dragElastic={0.1}
+          className="feature-marquee-track flex w-max items-start"
           variants={stagger}
           initial="hidden"
           whileInView="visible"
           viewport={VIEWPORT}
-          className="flex w-max cursor-grab select-none items-start gap-6 py-10 pr-5 active:cursor-grabbing sm:pr-8"
-          style={{ paddingLeft: "max(20px, calc((100vw - 72rem) / 2 + 32px))" }}
+          style={reduced ? { animation: "none" } : undefined}
         >
-          {cards.map((card) => (
-            <FeatureCard
-              key={card.key}
-              icon={card.icon}
-              title={card.title}
-              copy={card.copy}
-              variants={reveal}
-            />
+          {[false, true].map((duplicate) => (
+            <div
+              key={duplicate ? "duplicate" : "original"}
+              aria-hidden={duplicate || undefined}
+              className="flex flex-none items-start gap-6 py-10 pr-6"
+            >
+              {cards.map((card) => (
+                <FeatureCard
+                  key={`${duplicate ? "duplicate" : "original"}-${card.key}`}
+                  icon={card.icon}
+                  title={card.title}
+                  copy={card.copy}
+                  variants={reveal}
+                />
+              ))}
+            </div>
           ))}
         </motion.div>
-        <AnimatePresence>
-          {isHovering && (
-            <motion.div
-              key="drag-hint"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8 }}
-              transition={{ duration: 0.15 }}
-              className="pointer-events-none fixed z-[9999]"
-              style={{
-                left: mousePos.x + 16,
-                top: mousePos.y + 16,
-                background: COLORS.primary,
-                color: "#FFFFFF",
-                fontFamily: "'JetBrains Mono', 'Courier New', monospace",
-                fontSize: 12,
-                padding: "6px 14px",
-                borderRadius: 20,
-              }}
-            >
-              {"< DRAG >"}
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </section>
   );
@@ -600,7 +579,11 @@ function HowItWorks({ reduced }: { reduced: boolean }) {
   return (
     <section id="how-it-works" className="scroll-mt-20 px-5 py-20 sm:px-8">
       <div className="mx-auto max-w-6xl">
-        <SectionHeading eyebrow="How it works" title="Three steps. That's it." variants={reveal} />
+        <SectionHeading
+          eyebrow="How it works"
+          title="Three Steps to a Complete Substitution Plan"
+          variants={reveal}
+        />
         <motion.ol
           variants={stagger}
           initial="hidden"
@@ -745,8 +728,8 @@ function Testimonial({ reduced }: { reduced: boolean }) {
             “
           </div>
           <blockquote className="m-0 text-2xl font-normal leading-snug tracking-tight sm:text-3xl">
-            We used to spend half an hour on this every morning. Now it&apos;s done before I&apos;ve
-            finished my chai. — Vice Principal, Government School, Delhi
+            What previously required 30 minutes of manual coordination now takes minutes. The
+            fairness logic ensures no teacher is overburdened.
           </blockquote>
         </figure>
         <SupportOptions />
@@ -831,7 +814,7 @@ function Footer({ reduced }: { reduced: boolean }) {
       initial="hidden"
       whileInView="visible"
       viewport={VIEWPORT}
-      style={{ borderTop: "1px solid #151515" }}
+      style={{ borderTop: "1px solid #1A1A1A" }}
     >
       <div className="mx-auto grid max-w-6xl items-center gap-6 px-5 py-10 text-sm sm:px-8 md:grid-cols-3">
         <Link
@@ -906,7 +889,7 @@ function CookieBanner() {
         maxWidth: 320,
         width: "calc(100vw - 48px)",
         background: COLORS.bg,
-        border: "1px solid #151515",
+        border: "1px solid #1A1A1A",
         borderRadius: 0,
         boxShadow: "none",
       }}
