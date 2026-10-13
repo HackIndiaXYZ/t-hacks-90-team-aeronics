@@ -739,6 +739,152 @@ function Testimonial({ reduced }: { reduced: boolean }) {
 }
 
 /* ------------------------------------------------------------------ */
+/*  Pricing                                                            */
+/* ------------------------------------------------------------------ */
+
+const BASIC_FEATURES = [
+  "Absence logging by period",
+  "Automated substitution generator",
+  "Fair priority-based assignment",
+  "Teacher roster management",
+  "Same-subject matching first",
+];
+
+const PRO_FEATURES = [
+  "Public schedule board",
+  "Manual override per assignment",
+  "Download schedule as PDF/CSV",
+  "Schedule history & logs",
+];
+
+function Pricing() {
+  const mutedStyle = { color: "rgba(26, 26, 26, 0.6)" };
+  const featureStyle: CSSProperties = {
+    display: "flex",
+    alignItems: "flex-start",
+    gap: 10,
+    fontSize: 13,
+    lineHeight: 1.6,
+    color: COLORS.text,
+  };
+  const buttonStyle: CSSProperties = {
+    display: "inline-flex",
+    minHeight: 44,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    border: "1px solid rgba(0, 0, 0, 0.65)",
+    borderRadius: 4,
+    background: "transparent",
+    padding: "10px 16px",
+    color: COLORS.text,
+    fontSize: 13,
+    fontWeight: 600,
+    ...NO_SCALE,
+  };
+
+  return (
+    <section id="pricing" className="px-5 py-20 sm:px-8">
+      <div className="mx-auto max-w-5xl">
+        <div className="mx-auto mb-12 max-w-2xl text-center">
+          <span className="text-[11px] font-normal uppercase tracking-[0.2em]" style={mutedStyle}>
+            Pricing
+          </span>
+          <h2 className="mt-4 text-3xl leading-tight tracking-tight sm:text-5xl">
+            Simple, school-friendly pricing.
+          </h2>
+        </div>
+
+        <div className="grid gap-6 md:grid-cols-2">
+          <article
+            className="flex flex-col"
+            style={{
+              background: COLORS.bg,
+              border: "1px solid rgba(0, 0, 0, 0.14)",
+              borderRadius: 4,
+              padding: "36px 32px",
+            }}
+          >
+            <p className="text-[11px] font-normal uppercase tracking-[0.16em]" style={mutedStyle}>
+              Basic
+            </p>
+            <p className="mt-4 text-5xl font-bold leading-none" style={{ color: COLORS.text }}>
+              ₹409
+            </p>
+            <p className="mt-2 text-xs" style={mutedStyle}>
+              per school / month
+            </p>
+            <hr className="my-6 border-0" style={{ borderTop: "1px solid rgba(0, 0, 0, 0.14)" }} />
+            <ul className="mb-8 flex flex-1 flex-col gap-3">
+              {BASIC_FEATURES.map((feature) => (
+                <li key={feature} style={featureStyle}>
+                  <CheckCircle2 className="mt-0.5 size-4 flex-none" aria-hidden="true" />
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+            <Link to="/auth" search={{ tab: "signup" }} style={buttonStyle}>
+              Get started
+            </Link>
+          </article>
+
+          <article
+            className="relative flex flex-col"
+            style={{
+              background: COLORS.bg,
+              border: "1px solid rgba(0, 0, 0, 0.14)",
+              borderRadius: 4,
+              padding: "36px 32px",
+            }}
+          >
+            <span
+              className="absolute -top-3 left-8 px-3 py-1 text-[10px] font-semibold"
+              style={{
+                border: "1px solid rgba(0, 0, 0, 0.14)",
+                borderRadius: 999,
+                background: COLORS.bg,
+                color: COLORS.text,
+              }}
+            >
+              Most popular
+            </span>
+            <p className="text-[11px] font-normal uppercase tracking-[0.16em]" style={mutedStyle}>
+              Pro
+            </p>
+            <p className="mt-4 text-5xl font-bold leading-none" style={{ color: COLORS.text }}>
+              ₹499
+            </p>
+            <p className="mt-2 text-xs" style={mutedStyle}>
+              per school / month
+            </p>
+            <hr className="my-6 border-0" style={{ borderTop: "1px solid rgba(0, 0, 0, 0.14)" }} />
+            <ul className="mb-8 flex flex-1 flex-col gap-3">
+              <li style={{ ...featureStyle, fontWeight: 600 }}>
+                <CheckCircle2 className="mt-0.5 size-4 flex-none" aria-hidden="true" />
+                <span>Everything in Basic</span>
+              </li>
+              {PRO_FEATURES.map((feature) => (
+                <li key={feature} style={{ ...featureStyle, fontWeight: 700 }}>
+                  <span aria-hidden="true">+</span>
+                  <span>{feature}</span>
+                </li>
+              ))}
+            </ul>
+            <Link to="/auth" search={{ tab: "signup" }} style={buttonStyle}>
+              Get started <ArrowRight className="size-4" aria-hidden="true" />
+            </Link>
+          </article>
+        </div>
+        <p className="mt-6 text-center text-[11px]" style={mutedStyle}>
+          All plans include unlimited absences and substitutions. No hidden charges.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
 /*  FAQ                                                                */
 /* ------------------------------------------------------------------ */
 
@@ -961,6 +1107,7 @@ export function LandingPage() {
         <Features reduced={reduced} />
         <HowItWorks reduced={reduced} />
         <Testimonial reduced={reduced} />
+        <Pricing />
         <Faq reduced={reduced} />
         <Footer reduced={reduced} />
       </div>

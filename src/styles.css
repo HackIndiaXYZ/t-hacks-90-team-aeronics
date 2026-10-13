@@ -1562,4 +1562,107 @@ body:has(.student-portal) {
   background: rgba(0, 0, 0, 0.06) !important;
 }
 
+.auth-page {
+  --font-sans: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  --color-background: #fdf4dc;
+  --color-foreground: #1a1a1a;
+  --color-primary: #1a1a1a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: rgba(255, 255, 255, 0.4);
+  --color-secondary-foreground: #1a1a1a;
+  --color-muted: rgba(26, 26, 26, 0.05);
+  --color-muted-foreground: rgba(26, 26, 26, 0.6);
+  --color-accent: rgba(0, 0, 0, 0.06);
+  --color-accent-foreground: #1a1a1a;
+  --color-destructive: #cc0000;
+  --color-border: rgba(0, 0, 0, 0.14);
+  --color-input: rgba(0, 0, 0, 0.14);
+  --color-ring: #1a1a1a;
+  min-height: 100vh;
+  background: #fdf4dc !important;
+  color: #1a1a1a !important;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace !important;
+}
+
+body:has(.auth-page) {
+  background: #fdf4dc !important;
+  color: #1a1a1a !important;
+}
+
+.auth-page :is(h1, h2, h3, h4, h5, h6) {
+  color: #1a1a1a !important;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace !important;
+}
+
+.auth-page :is(a, .text-primary) {
+  color: #1a1a1a !important;
+}
+
+.auth-page .text-muted-foreground {
+  color: rgba(26, 26, 26, 0.6) !important;
+}
+
+.auth-page .auth-brand-logo {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.auth-page .auth-card {
+  background: rgba(255, 255, 255, 0.4) !important;
+  -webkit-backdrop-filter: blur(8px) !important;
+  backdrop-filter: blur(8px) !important;
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  border-radius: 4px !important;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06) !important;
+  color: #1a1a1a !important;
+}
+
+.auth-page input {
+  background: rgba(255, 255, 255, 0.5) !important;
+  border: 1px solid rgba(0, 0, 0, 0.2) !important;
+  border-radius: 4px !important;
+  color: #1a1a1a !important;
+}
+
+.auth-page input:focus {
+  outline: 2px solid #1a1a1a !important;
+  outline-offset: 2px;
+}
+
+.auth-page [role="tablist"] {
+  border: 1px solid rgba(0, 0, 0, 0.14) !important;
+  border-radius: 4px !important;
+  background: rgba(255, 255, 255, 0.25) !important;
+  padding: 3px;
+}
+
+.auth-page [role="tab"] {
+  border-radius: 3px !important;
+  color: rgba(26, 26, 26, 0.6) !important;
+}
+
+.auth-page [role="tab"][data-state="active"] {
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+.auth-page button.bg-primary {
+  border: 1px solid #1a1a1a !important;
+  border-radius: 4px !important;
+  background: #1a1a1a !important;
+  color: #ffffff !important;
+}
+
+.auth-page .auth-secondary-button {
+  border: 1px solid #1a1a1a !important;
+  border-radius: 4px !important;
+  background: transparent !important;
+  color: #1a1a1a !important;
+}
+
+.auth-page [role="alert"] {
+  border-radius: 4px !important;
+}
+
 }
